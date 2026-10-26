@@ -1,0 +1,155 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  idioma?: Idioma;
+  definiciones: string[];
+}
+const { definiciones, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<div class="formula ancho" data-formula>
+  {/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Fórmula desplazable con teclado en móvil. */}
+  <div
+    class="expresion"
+    tabindex="0"
+    role="region"
+    aria-label={t(idioma, 'interaccion.pistaFormula')}
+  >
+    <slot />
+  </div>
+  <div class="definiciones">
+    {definiciones.map((d, i) => (
+      <p data-definicion={i}>
+        <button
+          type="button"
+          class:list={['termino', `termino-${i}`]}
+          data-elegir-termino={i}
+          aria-pressed="false"
+        >
+          {['p(y | x)', 'W', 'h'][i]}
+        </button>{' '}
+        · {d}
+      </p>
+    ))}
+  </div>
+  <p class="pista-escritorio">{t(idioma, 'interaccion.pistaFormula')}</p>
+  <p class="pista-movil">{t(idioma, 'interaccion.pistaFormulaMovil')}</p>
+  <p data-definicion-activa class="visualmente-oculto" aria-live="polite"></p>
+</div>
+<script>
+  import { iniciarFormulas } from '../../lib/formula';
+  iniciarFormulas();
+</script>
+<style>
+  .formula {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .expresion {
+    font-size: var(--formula-size);
+    color: var(--heading);
+    overflow-x: auto;
+  }
+  .expresion :global(.katex) {
+    font-size: 1em;
+  }
+  .expresion :global(.katex-display) {
+    margin: 0;
+    text-align: left;
+  }
+  .expresion :global(.katex-display > .katex) {
+    text-align: left;
+  }
+  .expresion :global(.formula-prob),
+  .expresion :global(.formula-weight),
+  .expresion :global(.formula-hidden) {
+    border-radius: var(--radius-tag);
+    padding-inline: var(--space-1);
+  }
+  .expresion :global(.formula-prob) {
+    background: var(--formula-prob);
+  }
+  .expresion :global(.formula-weight) {
+    background: var(--formula-weight);
+  }
+  .expresion :global(.formula-hidden) {
+    background: var(--formula-hidden);
+  }
+  .definiciones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+    font-size: var(--text-meta);
+  }
+  .pista-movil {
+    display: none;
+  }
+  .pista-escritorio,
+  .pista-movil {
+    color: var(--muted);
+    font-size: var(--text-meta);
+    margin-top: var(--space-4);
+  }
+  .termino[aria-pressed='true'] {
+    outline: var(--active-line) solid var(--accent);
+    outline-offset: var(--underline-offset);
+  }
+  .termino {
+    border: 0;
+    min-height: var(--touch-min);
+    min-width: var(--touch-min);
+    cursor: pointer;
+    border-radius: var(--radius-tag);
+    padding: var(--space-1);
+  }
+  .termino-0 {
+    background: var(--formula-prob);
+    color: var(--res);
+  }
+  .termino-1 {
+    background: var(--formula-weight);
+    color: var(--eng);
+  }
+  .termino-2 {
+    background: var(--formula-hidden);
+    color: var(--muted);
+  }
+  @media (max-width: 767px) {
+    .pista-movil {
+      display: block;
+    }
+    .pista-escritorio {
+      display: none;
+    }
+    .formula {
+      padding: var(--space-4);
+    }
+    .expresion {
+      font-size: var(--chapter-title-mobile);
+    }
+    .expresion :global(.formula-prob),
+    .expresion :global(.formula-weight),
+    .expresion :global(.formula-hidden) {
+      border-radius: var(--radius-tag);
+      padding-inline: var(--space-1);
+    }
+    .expresion :global(.formula-prob) {
+      background: var(--formula-prob);
+    }
+    .expresion :global(.formula-weight) {
+      background: var(--formula-weight);
+    }
+    .expresion :global(.formula-hidden) {
+      background: var(--formula-hidden);
+    }
+    .definiciones {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>

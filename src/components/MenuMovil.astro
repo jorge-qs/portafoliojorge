@@ -1,0 +1,225 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Idioma } from '../i18n/config';
+import { seccionesVisibles, enlaceSeccion } from '../config/secciones';
+import { t, ruta } from '../i18n';
+import Boton from './Boton.astro';
+import Enlace from './Enlace.astro';
+import SelectorIdioma from './SelectorIdioma.astro';
+interface Props {
+  perfil: CollectionEntry<'perfil'>['data'];
+  idioma: Idioma;
+  hayNotas: boolean;
+  portada?: boolean;
+}
+const { perfil, idioma, hayNotas, portada = false } = Astro.props;
+const secciones = seccionesVisibles(hayNotas).filter((s) => s.ancla);
+---
+
+<dialog id="menu-movil" aria-label={t(idioma, 'navegacionMovil')} inert>
+  <div class="cabecera-menu">
+    <a class="marca" href={ruta(idioma)}>
+      {perfil.nombre.split(' ')[0].toLocaleUpperCase(idioma)}
+    </a>
+    <button type="button" data-cerrar-menu>
+      {t(idioma, 'cerrar')}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M18 6 6 18M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  <nav aria-label={t(idioma, 'navegacionPrincipal')}>
+    <ol>
+      {secciones.map((seccion) => (
+        <li>
+          <a
+            href={enlaceSeccion(idioma, seccion.ancla, portada)}
+            data-seccion={seccion.id}
+          >
+            <span class="numero num" aria-hidden="true">
+              {new Intl.NumberFormat(idioma, {
+                minimumIntegerDigits: 2,
+              }).format(seccion.numero)}
+            </span>
+            <span>{t(idioma, seccion.clave)}</span>
+            <span class="actual">{t(idioma, 'estasAqui')}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <div class="pie-menu">
+    <Boton href={perfil.cv.url}>
+      {t(idioma, 'descargarCv')} · {t(idioma, 'pdf')}{' '}
+      <span aria-hidden="true">↓</span>
+    </Boton>
+    <div class="sociales">
+      <Enlace href={perfil.contacto.github} idioma={idioma} variante="externo">
+        {t(idioma, 'github')}
+      </Enlace>
+      <Enlace
+        href={perfil.contacto.linkedin}
+        idioma={idioma}
+        variante="externo"
+      >
+        {t(idioma, 'linkedin')}
+      </Enlace>
+      <Enlace
+        href={perfil.contacto.email}
+        idioma={idioma}
+        variante="discreto"
+        correo
+      >
+        {t(idioma, 'correo')}
+      </Enlace>
+    </div>
+    <div class="idioma-menu">
+      <span>{t(idioma, 'idioma.etiqueta')}</span>
+      <SelectorIdioma idioma={idioma} tactil />
+    </div>
+  </div>
+</dialog>
+<style>
+  dialog {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--bg);
+    color: var(--text);
+    overflow-y: auto;
+  }
+  dialog[open] {
+    display: flex;
+    flex-direction: column;
+    animation: entrada-menu var(--dur) var(--ease-out) both;
+  }
+  @keyframes entrada-menu {
+    from {
+      opacity: 0;
+      transform: translateY(var(--menu-entry));
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  dialog::backdrop {
+    background: var(--bg);
+  }
+  .cabecera-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--nav-h);
+    padding-inline: var(--page-margin-mobile);
+    border-bottom: var(--line-width) solid var(--line);
+    font-size: var(--text-kicker);
+  }
+  .marca {
+    font-weight: 600;
+    letter-spacing: var(--brand-tracking);
+    color: var(--heading);
+    text-decoration: none;
+  }
+  .marca,
+  button {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+  button {
+    gap: var(--space-2);
+    min-width: var(--touch-min);
+    background: none;
+    border: 0;
+    color: var(--text);
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+  }
+  nav {
+    padding: var(--space-5) var(--page-margin-mobile);
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--kicker-gap);
+    min-height: var(--menu-row);
+    box-sizing: content-box;
+    border-bottom: var(--line-width) solid var(--line);
+    padding-top: var(--kicker-gap);
+    color: var(--heading);
+    text-decoration: none;
+    font-size: var(--menu-title);
+    font-weight: 600;
+  }
+  li:first-child a {
+    padding-top: 0;
+  }
+  .numero {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .actual {
+    color: var(--muted);
+    display: none;
+    font-size: var(--text-kicker);
+    font-weight: 400;
+    margin-left: auto;
+  }
+  li a[aria-current='location'],
+  li a[aria-current='location'] .numero {
+    color: var(--accent);
+  }
+  li a[aria-current='location'] .actual {
+    display: inline;
+  }
+  .pie-menu {
+    margin-top: auto;
+    padding: var(--space-5) var(--page-margin-mobile);
+  }
+  .pie-menu :global(.boton) {
+    width: 100%;
+  }
+  .sociales {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    font-size: var(--text-meta);
+  }
+  .sociales :global(.enlace) {
+    color: var(--muted);
+  }
+  .idioma-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+    color: var(--muted);
+    font-size: var(--text-meta);
+  }
+</style>

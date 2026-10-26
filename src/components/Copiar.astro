@@ -1,0 +1,36 @@
+---
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  valor: string;
+  idioma: Idioma;
+}
+const { valor, idioma } = Astro.props;
+---
+
+<span
+  class="copia"
+  data-copia
+  data-valor={valor}
+  data-ok={t(idioma, 'interaccion.copiado')}
+  data-error={t(idioma, 'interaccion.errorCopiar')}
+>
+  <button type="button" hidden>
+    {t(idioma, 'articulo.copiar')}
+  </button>
+  <span class="visualmente-oculto" aria-live="polite"></span>
+</span>
+<script>
+  import { iniciarCopias } from '../lib/copiar';
+  iniciarCopias();
+</script>
+<style>
+  button {
+    min-height: var(--touch-min);
+    min-width: var(--touch-min);
+    border: 0;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+  }
+</style>

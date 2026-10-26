@@ -1,0 +1,42 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  entradas: string[];
+  idioma?: Idioma;
+}
+const { entradas, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<ol class="referencias">
+  {entradas.map((texto, i) => (
+    <li id={`referencia-${i + 1}`} tabindex="-1">
+      <a
+        href={`#cita-${i + 1}`}
+        aria-label={t(idioma, 'articulo.volverReferencia', { n: i + 1 })}
+      >
+        [{new Intl.NumberFormat(idioma).format(i + 1)}]
+      </a>{' '}
+      {texto}
+    </li>
+  ))}
+</ol>
+<style>
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0;
+    font-size: var(--text-meta);
+  }
+  li {
+    padding-block: var(--space-2);
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
+  }
+</style>

@@ -1,0 +1,15 @@
+# Configuración de Codex para este repositorio (solo se aplica si el proyecto es de confianza).
+# Objetivo: que Codex avance solo, sin pedir aprobación a Jorge, dentro de un sandbox.
+#
+# - Puede leer todo y escribir solo dentro del repositorio (workspace-write).
+# - Tiene red: npm ci y la instalación de Chromium la necesitan.
+# - Si necesita salir del sandbox (por ejemplo, escribir en .git para hacer un commit),
+#   la solicitud la revisa otro modelo automáticamente (auto_review), no Jorge.
+#   Si se rechaza, sigue con lo demás y lo documenta (AGENTS.md § Forma de trabajar).
+
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+
+[sandbox_workspace_write]
+network_access = true

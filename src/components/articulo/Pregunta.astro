@@ -1,0 +1,47 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  pregunta: string;
+  h1: string;
+  h0: string;
+  idioma?: Idioma;
+}
+const { pregunta, h1, h0, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<div class="pregunta">
+  <p class="enunciado">{pregunta}</p>
+  <p class="hipotesis">
+    {t(idioma, 'articulo.h1')} · {h1} · {t(idioma, 'articulo.h0')} · {h0}
+  </p>
+</div>
+<style>
+  .pregunta {
+    padding: var(--space-5) var(--nav-hero-padding);
+    background: var(--question-bg);
+    border-radius: var(--radius-lg);
+  }
+  .enunciado {
+    font-size: var(--chapter-title);
+    font-weight: 500;
+    line-height: var(--chapter-leading);
+    letter-spacing: var(--section-tracking);
+    color: var(--heading);
+  }
+  .hipotesis {
+    margin-top: var(--space-3);
+    font-size: var(--text-ui);
+    color: var(--muted);
+  }
+  @media (max-width: 767px) {
+    .pregunta {
+      padding: var(--space-4);
+    }
+    .enunciado {
+      font-size: var(--chapter-title-mobile);
+    }
+  }
+</style>

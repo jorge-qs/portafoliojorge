@@ -1,0 +1,13 @@
+---
+import { obtenerNotas } from '../../../content/consultas';
+import Nota from '../../../vistas/Nota.astro';
+export async function getStaticPaths() {
+  return (await obtenerNotas('en')).map((nota) => ({
+    params: { slug: nota.slug },
+    props: { nota },
+  }));
+}
+const { nota } = Astro.props;
+---
+
+<Nota nota={nota} />

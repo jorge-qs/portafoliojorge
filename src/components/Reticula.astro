@@ -1,0 +1,27 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: clase } = Astro.props;
+---
+
+<div class:list={['reticula', clase]}>
+  <slot />
+</div>
+<style>
+  .reticula {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  @media (max-width: 1199px) {
+    .reticula {
+      grid-template-columns: repeat(var(--grid-columns-tablet), minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 767px) {
+    .reticula {
+      grid-template-columns: repeat(var(--grid-columns-mobile), minmax(0, 1fr));
+    }
+  }
+</style>

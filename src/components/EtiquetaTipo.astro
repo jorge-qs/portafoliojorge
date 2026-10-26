@@ -1,0 +1,51 @@
+---
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  tipo?: 'ing' | 'inv' | 'hib';
+  idioma: Idioma;
+}
+const { tipo, idioma } = Astro.props;
+---
+
+<span class:list={['etiqueta-tipo', tipo ?? 'pendiente']}>
+  <i aria-hidden="true"></i>
+  <span>
+    {t(
+      idioma,
+      tipo
+        ? { ing: 'tipoIng', inv: 'tipoInv', hib: 'tipoHib' }[tipo]
+        : 'portada.pendiente',
+    )}
+  </span>
+</span>
+<style>
+  .etiqueta-tipo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-meta);
+    color: var(--text);
+  }
+  i {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: currentColor;
+  }
+  .ing {
+    color: var(--eng);
+  }
+  .inv {
+    color: var(--res);
+  }
+  .hib i {
+    background: linear-gradient(90deg, var(--eng) 50%, var(--res) 50%);
+  }
+  .pendiente {
+    background: var(--pending-bg);
+    color: var(--pending-fg);
+    border-radius: var(--radius-tag);
+  }
+</style>

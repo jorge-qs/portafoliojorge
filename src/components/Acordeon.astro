@@ -1,0 +1,73 @@
+---
+interface Props {
+  titulo: string;
+  recuento?: string;
+  abierto?: boolean;
+}
+const { titulo, recuento, abierto = false } = Astro.props;
+---
+
+<details open={abierto} class="acordeon">
+  <summary>
+    <span>{titulo}</span>
+    <span class="estado">
+      <span class="num">{recuento}</span>
+      <span class="mas" aria-hidden="true">
+        ＋
+      </span>
+      <span class="menos" aria-hidden="true">
+        −
+      </span>
+    </span>
+  </summary>
+  <div class="contenido">
+    <slot />
+  </div>
+</details>
+<style>
+  details {
+    interpolate-size: allow-keywords;
+    border-top: var(--line-width) solid var(--line);
+  }
+  details::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height var(--dur) var(--ease-inout),
+      content-visibility var(--dur) allow-discrete;
+  }
+  details[open]::details-content {
+    height: auto;
+  }
+  summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--accordion-row);
+    cursor: pointer;
+    color: var(--heading);
+    font-size: var(--text-ui);
+    font-weight: 500;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .estado {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .menos,
+  details[open] .mas {
+    display: none;
+  }
+  details[open] .menos {
+    display: inline;
+  }
+  .contenido {
+    padding-bottom: var(--space-3);
+  }
+</style>

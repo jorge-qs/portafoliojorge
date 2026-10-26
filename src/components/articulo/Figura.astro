@@ -1,0 +1,53 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  numero: number;
+  leyenda: string;
+  descripcion: string;
+  sinteticos?: boolean;
+  ancho?: boolean;
+  idioma?: Idioma;
+}
+const {
+  numero,
+  leyenda,
+  descripcion,
+  sinteticos = false,
+  ancho = false,
+  idioma: idiomaProp,
+} = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<figure class:list={['figura', { ancho }]}>
+  <div class="grafico" aria-hidden="true">
+    <slot />
+  </div>
+  <span class="visualmente-oculto">{descripcion}</span>
+  <figcaption>
+    <span>{t(idioma, 'articulo.figura', { n: numero })}</span> · {leyenda}
+    {sinteticos && <> · {t(idioma, 'articulo.sinteticos')}</>}
+  </figcaption>
+</figure>
+<style>
+  figure {
+    margin: 0;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+  .grafico {
+    min-width: 0;
+  }
+  figcaption {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+    margin-top: var(--space-3);
+    line-height: 1.5;
+  }
+  figcaption span {
+    color: var(--text);
+  }
+</style>

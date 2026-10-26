@@ -1,0 +1,202 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Boton from '../components/Boton.astro';
+import HojaInferior from '../components/HojaInferior.astro';
+import SelectorTema from '../components/articulo/SelectorTema.astro';
+import SelectorIdioma from '../components/SelectorIdioma.astro';
+import type { Idioma } from '../i18n/config';
+import { t, ruta, formatearFecha } from '../i18n';
+import '../styles/articulo.css';
+import 'katex/dist/katex.min.css';
+interface Props {
+  titulo: string;
+  descripcion: string;
+  idioma: Idioma;
+  tipo?: 'ing' | 'inv' | 'hib';
+  nota?: boolean;
+  fecha?: string;
+  lectura?: string | number;
+  capitulos?: { slug: string; text: string }[];
+  anterior?: { slug: string; data: { titulo: string } };
+  siguiente?: { slug: string; data: { titulo: string } };
+  idiomaContenido?: Idioma;
+  esRespaldo?: boolean;
+  canonical?: string;
+  alternativos?: Idioma[];
+}
+const {
+  titulo,
+  descripcion,
+  idioma,
+  tipo,
+  nota = false,
+  fecha,
+  lectura,
+  capitulos = [],
+  anterior,
+  siguiente,
+  idiomaContenido,
+  esRespaldo = false,
+  canonical,
+  alternativos,
+} = Astro.props;
+---
+
+<BaseLayout
+  titulo={titulo}
+  descripcion={descripcion}
+  idioma={idioma}
+  tema="elegible"
+  tipo={tipo}
+  nota={nota}
+  capitulos={capitulos}
+  canonical={canonical}
+  alternativos={alternativos}
+>
+  <div class:list={['articulo-reticula', { nota }]}>
+    {!nota && (
+      <aside class="indice-articulo">
+        <a
+          class="volver-indice"
+          data-enlace-proyectos
+          href={`${ruta(idioma)}#indice`}
+        >
+          {t(idioma, 'articulo.indice')}
+        </a>
+        <nav aria-label={t(idioma, 'articulo.capitulos')}>
+          <ol>
+            {capitulos.map((c) => (
+              <li>
+                <a href={`#${c.slug}`} data-capitulo={c.slug}>
+                  {c.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        {lectura !== undefined && (
+          <p>{t(idioma, 'articulo.lectura', { n: lectura })}</p>
+        )}
+      </aside>
+    )}
+    <article
+      class="articulo"
+      lang={idiomaContenido}
+      data-articulo
+      data-plantilla={tipo === 'inv' ? 'B' : 'A'}
+    >
+      {esRespaldo && (
+        <p class="aviso-respaldo" role="note">
+          {t(idioma, 'idiomaRespaldo')}
+        </p>
+      )}
+      <header class="cabecera-articulo">
+        <p class="metadatos">
+          <span class:list={['etiqueta-tipo', tipo]}>
+            {t(
+              idioma,
+              tipo
+                ? `tipo${tipo[0].toUpperCase()}${tipo.slice(1)}`
+                : 'articulo.notas',
+            )}
+          </span>
+          {fecha && (
+            <>
+              {' '}
+              ·{' '}
+              <span>
+                {/^\d{4}-\d{2}-\d{2}$/.test(fecha)
+                  ? formatearFecha(idioma, fecha)
+                  : fecha}
+              </span>
+            </>
+          )}
+        </p>
+        <h1>{titulo}</h1>
+        {descripcion && <p class="entradilla">{descripcion}</p>}
+      </header>
+      <div class="cuerpo-articulo">
+        <slot />
+      </div>
+    </article>
+    {(anterior || siguiente) && (
+      <nav
+        class="articulos-adyacentes"
+        aria-label={t(idioma, 'articulo.recursos')}
+      >
+        {anterior && (
+          <Boton
+            variante="terciario"
+            href={ruta(idioma, `/proyectos/${anterior.slug}`)}
+            data-anterior
+          >
+            <span>{t(idioma, 'articulo.anterior')}</span>
+            <strong>{anterior.data.titulo}</strong>
+          </Boton>
+        )}
+        {siguiente && (
+          <Boton
+            variante="terciario"
+            href={ruta(idioma, `/proyectos/${siguiente.slug}`)}
+            data-siguiente
+          >
+            <span>{t(idioma, 'articulo.siguiente')}</span>
+            <strong>{siguiente.data.titulo}</strong>
+          </Boton>
+        )}
+      </nav>
+    )}
+  </div>
+  {capitulos.length > 0 && (
+    <HojaInferior
+      id="capitulos"
+      titulo={t(idioma, 'articulo.capitulos')}
+      idioma={idioma}
+      variante="capitulos"
+    >
+      <nav aria-label={t(idioma, 'articulo.capitulos')}>
+        <ol class="lista-capitulos">
+          {capitulos.map((c) => (
+            <li>
+              <a href={`#${c.slug}`} data-capitulo={c.slug}>
+                {c.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </HojaInferior>
+  )}
+  <HojaInferior
+    id="opciones-lectura"
+    titulo={t(idioma, 'articulo.opciones')}
+    idioma={idioma}
+  >
+    <p class="opciones-etiqueta">{t(idioma, 'articulo.tema')}</p>
+    <SelectorTema idioma={idioma} sistema />
+    <label class="reducir-movimiento">
+      <span>{t(idioma, 'articulo.movimiento')}</span>
+      <span class="interruptor">
+        <input type="checkbox" role="switch" data-reducir-movimiento />
+        <span class="interruptor-pista" aria-hidden="true"></span>
+      </span>
+    </label>
+    <p class="preferencia-ayuda">{t(idioma, 'articulo.recordar')}</p>
+    <p class="opciones-etiqueta">{t(idioma, 'idioma.etiqueta')}</p>
+    <SelectorIdioma idioma={idioma} tactil />
+  </HojaInferior>
+</BaseLayout>
+<style>
+  .aviso-respaldo {
+    margin-block: 0 var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    padding: var(--space-3) var(--space-4);
+    color: var(--muted);
+    font-size: var(--text-meta);
+  }
+</style>
+<script>
+  import { iniciarArticulo } from '../lib/articulo';
+  iniciarArticulo();
+</script>

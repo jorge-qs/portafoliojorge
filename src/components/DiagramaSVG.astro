@@ -1,0 +1,97 @@
+---
+// Dibujo compartido de un diagrama de nodos (C8): lo usan los artículos (F3/F4)
+// y la figura del relato (F5). Solo pinta estados; la interacción vive aparte.
+import type { EstadoDiagrama, ModeloDiagrama } from '../lib/diagrama';
+interface Props {
+  modelo: ModeloDiagrama;
+  estado?: EstadoDiagrama;
+  viewBox?: string;
+}
+const { modelo, estado = {}, viewBox = '-12 0 490 400' } = Astro.props;
+const seleccionado = estado.seleccionado ?? modelo.seleccionado;
+const posicion = (id: string) => {
+  const nodo = modelo.nodos.find((n) => n.id === id)!;
+  return estado.posiciones?.[id] ?? { x: nodo.x, y: nodo.y };
+};
+const resaltada = (a: string, b: string) =>
+  (estado.aristasResaltadas ?? []).some(
+    ([x, y]) => (x === a && y === b) || (x === b && y === a),
+  );
+const estadoNodo = (id: string) =>
+  id === seleccionado
+    ? 'seleccionado'
+    : estado.atenuados?.includes(id)
+      ? 'atenuado'
+      : estado.recorrido?.includes(id)
+        ? 'recorrido'
+        : 'reposo';
+---
+
+<svg class="diagrama-svg" viewBox={viewBox} aria-hidden="true">
+  <g class="aristas">
+    {modelo.aristas.map(([a, b]) => (
+      <line
+        x1={posicion(a).x}
+        y1={posicion(a).y}
+        x2={posicion(b).x}
+        y2={posicion(b).y}
+        class:list={{ resaltada: resaltada(a, b) }}
+        data-arista={`${a}:${b}`}
+      />
+    ))}
+  </g>
+  <g class="nodos">
+    {modelo.nodos.map((n) => (
+      <g
+        class="nodo"
+        data-nodo={n.id}
+        data-estado={estadoNodo(n.id)}
+        style={`transform: translate(${posicion(n.id).x}px, ${posicion(n.id).y}px)`}
+      >
+        <rect x="-52" y="-20" width="104" height="40" rx="8" />
+        <text text-anchor="middle" dominant-baseline="central">
+          {n.etiqueta}
+        </text>
+      </g>
+    ))}
+  </g>
+</svg>
+<style>
+  .diagrama-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .aristas line {
+    stroke: var(--edge);
+    stroke-width: var(--line-width);
+  }
+  .aristas .resaltada {
+    stroke: var(--accent);
+    stroke-width: var(--active-line);
+  }
+  /* Fondo sólido y siempre por encima de las aristas (BUGS_CONOCIDOS.md § 1). */
+  .nodo rect {
+    fill: var(--surface-2);
+    stroke: none;
+  }
+  .nodo text {
+    fill: var(--text);
+    font: var(--text-kicker) var(--font-sans);
+  }
+  .nodo[data-estado='recorrido'] rect {
+    fill: var(--accent-tint);
+  }
+  .nodo[data-estado='seleccionado'] rect {
+    fill: var(--selected);
+    stroke: var(--accent);
+    stroke-width: var(--line-width);
+  }
+  .nodo[data-estado='seleccionado'] text {
+    fill: var(--heading);
+    font-weight: 600;
+  }
+  .nodo[data-estado='atenuado'] {
+    opacity: var(--node-dimmed);
+  }
+</style>

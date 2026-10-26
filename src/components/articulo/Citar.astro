@@ -1,0 +1,39 @@
+---
+import Copiar from '../Copiar.astro';
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  bibtex: string;
+  idioma?: Idioma;
+}
+const { bibtex, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+{/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Región desplazable accesible con teclado, exigida por F3. */}
+<div class="citar">
+  <p>{t(idioma, 'articulo.citar')}</p>
+  <div role="region" tabindex="0" aria-label={t(idioma, 'articulo.citar')}>
+    <pre><code>{bibtex}</code></pre>
+  </div>
+  <Copiar valor={bibtex} idioma={idioma} />
+</div>
+<style>
+  .citar {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-block: var(--space-5);
+    font-size: var(--text-meta);
+    color: var(--muted);
+  }
+  .citar > div {
+    overflow: auto;
+  }
+  pre {
+    margin: var(--space-3) 0 0;
+    font: var(--code-size)/var(--code-leading) var(--font-mono);
+    color: var(--text);
+  }
+</style>

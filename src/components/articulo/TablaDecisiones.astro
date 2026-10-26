@@ -1,0 +1,65 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  filas: string[][];
+  idioma?: Idioma;
+}
+const { filas, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+{/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Tabla desplazable accesible con teclado. */}
+<div
+  class="tabla ancho"
+  tabindex="0"
+  role="region"
+  aria-label={t(idioma, 'articulo.tabla')}
+>
+  <table>
+    <thead>
+      <tr>
+        {['decision', 'elegida', 'alternativa', 'porque'].map((c) => (
+          <th scope="col">{t(idioma, `articulo.${c}`)}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {filas.map((f) => (
+        <tr>
+          {f.map((v) => (
+            <td>{v}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .tabla {
+    max-width: 100%;
+    overflow: auto;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 640px;
+    font-size: var(--text-meta);
+    line-height: 1.5;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: var(--space-3) var(--space-3) var(--space-3) 0;
+    vertical-align: top;
+    border-bottom: var(--line-width) solid var(--line);
+  }
+  th {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  tr:nth-child(even) {
+    background: var(--chapter-current);
+  }
+</style>

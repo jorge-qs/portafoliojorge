@@ -1,0 +1,194 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Seccion } from '../../config/secciones';
+import type { Idioma } from '../../i18n/config';
+import type { EntradaProyecto } from '../../content/validacion';
+import { codigoProyecto } from '../../content/validacion';
+import { proyectosDeHerramienta } from '../../lib/portada';
+import { ruta, t } from '../../i18n';
+import EncabezadoSeccion from '../EncabezadoSeccion.astro';
+import Herramienta from '../Herramienta.astro';
+import TarjetaEvidencia from '../TarjetaEvidencia.astro';
+import Acordeon from '../Acordeon.astro';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  tecnologias: CollectionEntry<'tecnologias'>['data'];
+  proyectos: (EntradaProyecto & { slug: string })[];
+}
+const { seccion, idioma, tecnologias, proyectos } = Astro.props;
+const seleccionada = tecnologias.areas[0].herramientas[0];
+const seleccionados = proyectosDeHerramienta(proyectos, seleccionada);
+---
+
+<EncabezadoSeccion
+  seccion={seccion}
+  idioma={idioma}
+  titulo={t(idioma, 'portada.tecnologiasTitulo')}
+/>
+<div
+  class="tecnologias-escritorio"
+  data-evidencia-mensaje={t(idioma, 'portada.evidencia', {
+    herramienta: '{herramienta}',
+    n: '{n}',
+  })}
+>
+  <div class="areas">
+    {tecnologias.areas.map((area, i) => (
+      <div class="area">
+        <span class="numero num">{codigoProyecto(i)}</span>
+        <h3>{area.nombre}</h3>
+        <div class="herramientas">
+          {area.herramientas.map((nombre) => (
+            <Herramienta
+              nombre={nombre}
+              recuento={proyectosDeHerramienta(proyectos, nombre).length}
+              seleccionada={nombre === seleccionada}
+              idioma={idioma}
+            />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+  <div class="franja">
+    <p data-anuncio-herramienta aria-live="polite">
+      {t(idioma, 'portada.evidencia', {
+        herramienta: seleccionada,
+        n: seleccionados.length,
+      })}
+    </p>
+    <div class="evidencias">
+      {proyectos.map((p, i) => (
+        <TarjetaEvidencia
+          proyecto={p}
+          codigo={codigoProyecto(i)}
+          activa={seleccionados.includes(p)}
+          idioma={idioma}
+        />
+      ))}
+    </div>
+  </div>
+</div>
+<div class="tecnologias-movil">
+  {tecnologias.areas.map((area, i) => (
+    <Acordeon titulo={area.nombre} abierto={i === 0}>
+      {area.herramientas.map((nombre) => {
+        const relacionados = proyectosDeHerramienta(proyectos, nombre);
+        return (
+          <div class="herramienta-movil">
+            <span>{nombre}</span>
+            <span class="codigos">
+              {relacionados.slice(0, 4).map((p) => (
+                <a
+                  class="num"
+                  href={ruta(idioma, `proyectos/${p.slug}/`)}
+                  aria-label={`${codigoProyecto(proyectos.indexOf(p))} · ${p.data.titulo} · ${nombre}`}
+                >
+                  {codigoProyecto(proyectos.indexOf(p))}
+                </a>
+              ))}
+              {relacionados.length > 4 && (
+                <span class="num">
+                  +
+                  {new Intl.NumberFormat(idioma).format(
+                    relacionados.length - 4,
+                  )}
+                </span>
+              )}
+            </span>
+          </div>
+        );
+      })}
+    </Acordeon>
+  ))}
+</div>
+<script>
+  import { iniciarHerramientas } from '../../lib/herramientas';
+  iniciarHerramientas();
+</script>
+<style>
+  .tecnologias-escritorio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+  }
+  .areas {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .numero {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  h3 {
+    font-size: var(--space-4);
+    line-height: var(--area-leading);
+    font-weight: 600;
+    min-height: var(--area-title-min);
+    margin-top: var(--space-1);
+  }
+  .herramientas {
+    padding-top: var(--space-3);
+  }
+  .franja p {
+    color: var(--muted);
+    font-size: var(--text-meta);
+    margin-bottom: var(--space-4);
+  }
+  .evidencias {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .tecnologias-movil {
+    display: none;
+  }
+  @media (max-width: 1199px) {
+    .areas {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: var(--section-block-gap);
+    }
+    .evidencias {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 767px) {
+    .tecnologias-escritorio {
+      display: none;
+    }
+    .tecnologias-movil {
+      display: block;
+      margin-top: var(--space-5);
+    }
+    .herramienta-movil {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: var(--touch-min);
+      gap: var(--space-3);
+      font-size: var(--text-ui);
+    }
+    .codigos {
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--space-1);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .codigos a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--touch-min);
+      min-width: var(--touch-min);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--accent);
+      font-size: var(--text-kicker);
+      text-decoration: none;
+    }
+  }
+</style>

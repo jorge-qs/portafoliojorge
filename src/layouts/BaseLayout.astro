@@ -1,0 +1,130 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+import { t, rutaEquivalente } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import { obtenerConRespaldo, hayNotasPublicadas } from '../content/consultas';
+import BarraGlobal from '../components/BarraGlobal.astro';
+import MenuMovil from '../components/MenuMovil.astro';
+import PiePagina from '../components/PiePagina.astro';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  idioma: Idioma;
+  tema: 'cosmos' | 'elegible';
+  portada?: boolean;
+  tipo?: 'ing' | 'inv' | 'hib';
+  nota?: boolean;
+  capitulos?: { slug: string; text: string }[];
+  canonical?: string;
+  alternativos?: Idioma[];
+}
+const {
+  titulo,
+  descripcion,
+  idioma,
+  tema,
+  portada = false,
+  tipo,
+  nota = false,
+  capitulos = [],
+  canonical,
+  alternativos = ['es', 'en'],
+} = Astro.props;
+const { data: perfil } = await obtenerConRespaldo('perfil', idioma);
+const hayNotas = await hayNotasPublicadas(idioma);
+const rutaCanonica = canonical ?? Astro.url.pathname;
+const rutaEs = rutaEquivalente(Astro.url.pathname, 'es');
+const rutaEn = rutaEquivalente(Astro.url.pathname, 'en');
+const urlEs = new URL(rutaEs, Astro.site);
+const urlEn = new URL(rutaEn, Astro.site);
+---
+
+<!doctype html>
+<html lang={idioma} data-theme="cosmos">
+  <head>
+    <meta charset="UTF-8" />
+    <script is:inline define:vars={{ elegible: tema === 'elegible' }}>
+      try {
+        if (localStorage.getItem('movimiento') === 'reducido')
+          document.documentElement.dataset.movimiento = 'reducido';
+        const preferencia = elegible ? localStorage.getItem('tema') : 'cosmos';
+        const tema =
+          preferencia === 'sistema'
+            ? matchMedia('(prefers-color-scheme: light)').matches
+              ? 'dawn'
+              : 'cosmos'
+            : preferencia === 'dawn'
+              ? 'dawn'
+              : 'cosmos';
+        document.documentElement.dataset.theme = tema;
+      } catch {
+        document.documentElement.dataset.theme = 'cosmos';
+      }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descripcion} />
+    <title>{titulo}</title>
+    <link rel="canonical" href={new URL(rutaCanonica, Astro.site)} />
+    {alternativos.includes('es') && (
+      <link rel="alternate" hreflang="es" href={urlEs} />
+    )}
+    {alternativos.includes('en') && (
+      <link rel="alternate" hreflang="en" href={urlEn} />
+    )}
+    {alternativos.includes('es') && (
+      <link rel="alternate" hreflang="x-default" href={urlEs} />
+    )}
+    <link
+      rel="preload"
+      href="/fonts/geist-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/geist-latin-600-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <a class="saltar-contenido" href="#contenido">
+      {t(idioma, 'saltarContenido')}
+    </a>
+    <header>
+      <slot name="header">
+        <BarraGlobal
+          perfil={perfil}
+          idioma={idioma}
+          hayNotas={hayNotas}
+          portada={portada}
+          tipo={tipo}
+          nota={nota}
+          capitulos={capitulos}
+        />
+      </slot>
+    </header>
+    <main id="contenido" class:list={{ portada }} tabindex="-1">
+      <slot />
+    </main>
+    <footer>
+      <slot name="footer">
+        <PiePagina perfil={perfil} idioma={idioma} portada={portada} />
+      </slot>
+    </footer>
+    <MenuMovil
+      perfil={perfil}
+      idioma={idioma}
+      hayNotas={hayNotas}
+      portada={portada}
+    />
+    <script>
+      import { iniciarNavegacion } from '../lib/navegacion';
+      iniciarNavegacion();
+    </script>
+  </body>
+</html>

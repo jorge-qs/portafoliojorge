@@ -1,0 +1,43 @@
+---
+interface Props {
+  nombre: string;
+  recuento: number;
+  seleccionada?: boolean;
+  idioma: string;
+}
+const { nombre, recuento, seleccionada = false, idioma } = Astro.props;
+---
+
+<button type="button" data-herramienta={nombre} aria-pressed={seleccionada}>
+  <span>{nombre}</span>
+  <span class="num">{new Intl.NumberFormat(idioma).format(recuento)}</span>
+</button>
+<style>
+  button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tool-h);
+    padding: 0;
+    text-align: left;
+    border: 0;
+    border-bottom: var(--line-width) solid var(--line);
+    background: transparent;
+    color: var(--text);
+    font-size: var(--text-ui);
+  }
+  .num {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  button[aria-pressed='true'] {
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  button:hover {
+    color: var(--heading);
+  }
+</style>

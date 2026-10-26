@@ -1,0 +1,333 @@
+/* Kairos · tokens semánticos. La portada usa siempre Cosmos; los artículos permiten cambiar de tema. */
+:root, [data-theme="cosmos"] {
+  --bg: #0A0D14;
+  --surface: #10141D;
+  --surface-2: #151A25;
+  --surface-hover: #1C2230;
+  --line: rgba(232, 220, 196, .08);
+  --text: #E8DCC4;
+  --heading: #F4F1EA;
+  --muted: #8C929D;
+  --accent: #C9A06A;          /* acción, estado activo, foco */
+  --accent-hover: #D6B07C;
+  --on-accent: #0A0D14;       /* texto sobre --accent (botón primario) */
+  --accent-tint: rgba(201, 160, 106, .16);
+  --eng: #B08C5C;             /* etiqueta Ingeniería */
+  --res: #6F9DE3;             /* etiqueta Investigación y enlace en el texto */
+  --link: #6F9DE3;
+  --selected: #2A2418;        /* nodo de diagrama seleccionado */
+  --pending-bg: rgba(176, 140, 92, .16);
+  --pending-fg: #B08C5C;
+  /* F3 · artículos */
+  --article-pending-bg: #252120; /* pending-bg compuesto sobre bg, evita doble tinte */
+  --chapter-current: rgba(232, 220, 196, .06);
+  --minute-bg: rgba(201, 160, 106, .08);
+  --question-bg: rgba(111, 157, 227, .08);
+  --formula-prob: rgba(111, 157, 227, .12);
+  --formula-weight: rgba(201, 160, 106, .16);
+  --formula-hidden: rgba(140, 146, 157, .12);
+  --edge: rgba(140, 146, 157, .4);
+  --plot-a: #6F9DE3;
+  --plot-b: #B08C5C;
+  --code-text: #E8DCC4;
+  --code-muted: #8C929D;
+  --code-keyword: #6F9DE3;
+  --code-string: #B08C5C;
+  --code-number: #C9A06A;
+  --sheet-backdrop: rgba(10, 13, 20, .6);
+}
+[data-theme="dawn"] {
+  --bg: #F7F3EA;
+  --surface: #FFFDF8;
+  --surface-2: #EFE9DC;
+  --surface-hover: #E8E1D2;
+  --line: rgba(20, 28, 48, .12);
+  --text: #141C30;
+  --heading: #0E1424;
+  --muted: #4E586F;
+  --accent: #7A5824;
+  --accent-hover: #5E4318;
+  --on-accent: #FFFDF8;       /* 2026-10-25: #0A0D14 daba 3,0:1 sobre --accent y 2,1:1 en hover; este da 6,4 y 9,0 */
+  --accent-tint: rgba(122, 88, 36, .16);
+  --eng: #7A5824;             /* igual a --accent: pendiente de decidir, ver docs/PLAN.md § Decisiones abiertas */
+  --res: #2E5487;
+  --link: #2E5487;
+  --selected: #EFE9DC;
+  --pending-bg: rgba(122, 88, 36, .12);
+  --pending-fg: #7A5824;
+  /* F3 · artículos */
+  --article-pending-bg: #E8E0D2; /* pending-bg compuesto sobre bg */
+  --chapter-current: rgba(20, 28, 48, .06);
+  --minute-bg: rgba(122, 88, 36, .08);
+  --question-bg: rgba(46, 84, 135, .08);
+  --formula-prob: rgba(46, 84, 135, .12);
+  --formula-weight: rgba(122, 88, 36, .16);
+  --formula-hidden: rgba(78, 88, 111, .12);
+  --edge: rgba(78, 88, 111, .4);
+  --plot-a: #2E5487;
+  --plot-b: #7A5824;
+  --code-text: #141C30;
+  --code-muted: #4E586F;
+  --code-keyword: #2E5487;
+  --code-string: #7A5824;
+  --code-number: #7A5824;
+  --sheet-backdrop: rgba(20, 28, 48, .35);
+}
+:root {
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --space-9: 96px; --space-10: 144px; --space-11: 160px;
+
+  --radius-tag: 4px; --radius-sm: 8px; --radius-md: 10px; --radius-lg: 12px;
+  --radius-sheet: 20px;
+
+  --dur-fast: 150ms; --dur: 200ms; --dur-layout: 240ms;
+  --ease-out: cubic-bezier(.215, .61, .355, 1);   /* cúbica */
+  --ease-inout: cubic-bezier(.645, .045, .355, 1);
+
+  --nav-h: 56px;
+  --content-max: 1200px;
+}
+:root {
+  /* F4 · interacciones */
+  --dur-salida: 120ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur: 0ms; --dur-layout: 0ms;
+    /* F4 · interacciones */
+    --dur-salida: 0ms;
+  }
+  html { scroll-behavior: auto !important; }
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* F1 · navegación, encabezados y alturas reservadas. */
+:root {
+  --nav-bg: color-mix(in srgb, var(--bg) 94%, transparent);
+  --text-kicker: 13px;
+  --text-meta: 14px;
+  --text-ui: 15px;
+  --section-title: 40px;
+  --section-title-mobile: 30px;
+  --section-leading: 1.15;
+  --section-tracking: -0.02em;
+  --kicker-gap: 14px;
+  --menu-title: 24px;
+  --menu-row: 60px;
+  --menu-entry: 16px;
+  --touch-min: 44px;
+  --button-h: 48px;
+  --press-scale: .98;
+  --line-width: 1px;
+  --active-line: 2px;
+  --node-dimmed: .4;            /* nodo de diagrama atenuado (C8) */
+  --underline-offset: 3px;
+  --brand-tracking: .2em;
+  --nav-margin: 64px;
+  --nav-article-margin: 56px;
+  --nav-hero-padding: 28px;
+  --nav-link-gap: 28px;
+  --theme-slot: 120px;
+  --page-margin: 40px;
+  --page-margin-mobile: 20px;
+  --anchor-offset: 72px;
+  --z-nav: 10;
+  --z-skip: 20;
+  --section-gap: 160px;
+  --index-gap: 144px;
+  --section-gap-tablet: 128px;
+  --section-gap-mobile: 96px;
+  --hero-min: 100svh;
+  --stories-min: 1200svh;
+  --index-min: 900px;
+  --about-min: 850px;
+  --technologies-min: 800px;
+  --notes-min: 450px;
+  --contact-min: 880px;
+  /* F2 · portada */
+  --grid-columns: 12;
+  --grid-columns-tablet: 8;
+  --grid-columns-mobile: 4;
+  --section-block-gap: 40px;
+  --text-body-about: 17px;
+  --text-project: 18px;
+  --question-leading: 1.45;
+  --about-leading: 1.65;
+  --evidence-leading: 1.35;
+  --area-leading: 1.3;
+  --dot-size: 8px;
+  --row-padding: 22px;
+  --index-columns: 56px minmax(0, 1fr) 150px 72px 230px 160px;
+  --index-columns-tablet: 44px minmax(0, 1fr) 130px 120px;
+  --question-label: 110px;
+  --intro-max: 560px;
+  --portrait-tablet: 240px;
+  --tool-h: 40px;
+  --area-title-min: 42px;
+  --evidence-min: 96px;
+  --evidence-opacity: .3;
+  --note-columns: 120px minmax(0, 1fr) 140px 120px;
+  --contact-columns: 120px minmax(0, 1fr) 48px;
+  --contact-row: 60px;
+  --accordion-row: 56px;
+  --contact-top: 208px;
+  --contact-top-tablet: 280px;
+  --contact-mobile-art: 130px;
+  --hand-opacity: .45;
+  --hand-saturation: .7;
+  --terminal-opacity: .85;
+  --terminal-w: 120px;
+  --terminal-h: 68px;
+  --terminal-font: 10px;
+  --terminal-radius: 6px;
+  --hand-w: 540px;
+  --hand-h: 320px;
+  --hand-top: 268px;
+  --terminal-top: 398px;
+  --contact-terminal-left: calc(100% - 536px);
+  --contact-hand-left: calc(100% - 418px);
+  --contact-hand-left-tablet: calc(100% - 258px);
+  --contact-terminal-left-tablet: calc(100% - 364px);
+  --contact-hand-top-tablet: 6px;
+  --contact-terminal-top-tablet: 110px;
+  --hand-w-tablet: 405px;
+  --hand-h-tablet: 240px;
+  --hand-w-mobile: 270px;
+  --hand-h-mobile: 160px;
+  --contact-hand-left-mobile: calc(50% - 29px);
+  --contact-terminal-left-mobile: calc(50% - 111px);
+  --contact-hand-top-mobile: -5px;
+  --contact-terminal-top-mobile: 52px;
+  --stars-low: .15;
+  --stars-mid: .3;
+  --stars-high: .45;
+  --art-layer: 0;
+  --content-layer: 1;
+  --terminal-w-tablet: 100px;
+  --terminal-h-tablet: 56px;
+  --terminal-w-mobile: 78px;
+  --terminal-h-mobile: 44px;
+}
+
+:root {
+  /* F3 · artículos */
+  --article-max: 1152px;
+  --article-rail: 180px;
+  --article-reading: 632px;
+  --article-margin: 260px;
+  --article-gap: 40px;
+  --article-title: 52px;
+  --article-title-mobile: 32px;
+  --article-title-leading: 1.1;
+  --article-title-tracking: -.025em;
+  --article-deck: 20px;
+  --article-deck-mobile: 17px;
+  --article-deck-leading: 1.45;
+  --article-body-leading: 1.65;
+  --chapter-title: 26px;
+  --chapter-title-mobile: 22px;
+  --chapter-leading: 1.3;
+  --code-size: 13px;
+  --code-leading: 1.75;
+  --formula-size: 30px;
+  --diagram-panel: 280px;
+  --diagram-height: 440px;
+  --diagram-mobile-height: 250px;
+  --sheet-handle-width: 40px;
+  --sheet-handle-height: 4px;
+  --sheet-entry: 32px;
+  --switch-height: 26px;
+  --switch-thumb: 20px;
+  --switch-inset: 3px;
+  --switch-travel: 18px;
+  --plot-opacity-a: .55;
+  --plot-opacity-b: .35;
+  --astro-code-color-text: var(--code-text);
+  --astro-code-color-background: var(--surface);
+  --astro-code-token-constant: var(--code-number);
+  --astro-code-token-string: var(--code-string);
+  --astro-code-token-comment: var(--code-muted);
+  --astro-code-token-keyword: var(--code-keyword);
+  --astro-code-token-parameter: var(--code-text);
+  --astro-code-token-function: var(--code-text);
+  --astro-code-token-string-expression: var(--code-string);
+  --astro-code-token-punctuation: var(--code-text);
+  --astro-code-token-link: var(--code-keyword);
+}
+html[data-movimiento="reducido"] {
+  /* F3 · artículos */
+  --dur-fast: 0ms; --dur: 0ms; --dur-layout: 0ms;
+  scroll-behavior: auto !important;
+  /* F4 · interacciones */
+  --dur-salida: 0ms;
+}
+
+:root {
+  /* F5 · relato */
+  --relato-top: 120px;
+  --relato-rail-h: 52px;
+  --relato-title: 34px;
+  --relato-ch: 96svh;
+  --relato-ch-pad: 22svh;
+  --relato-step: 52svh;
+  --relato-ch-mobile: 72svh;
+  --relato-step-mobile: 46svh;
+  --relato-mobile-h: 34svh;
+  --relato-mobile-max: 260px;
+}
+
+:root {
+  /* F6 · hero */
+  --dur-hero: 350ms;
+  --dur-hero-estrellas: 600ms;
+  --dur-hero-mano: 900ms;
+  --retardo-hero-mano: 200ms;
+  --dur-hero-texto: 500ms;
+  --retardo-hero-texto: 1800ms;
+  --dur-hero-cursor: 2500ms;
+  --hero-fijacion: 60vh;
+  --hero-fijacion-movil: 40vh;
+  --hero-cabecera: rgba(232, 220, 196, 0.09);
+  --hero-cabecera-punta: rgba(232, 220, 196, 0.14);
+  --hero-fondo-punta: rgba(232, 220, 196, 0.07);
+  --hero-mascara-opaca: #000;
+  --hero-filtro-mano: sepia(0.18) saturate(0.85) brightness(0.96);
+  --hero-nombre: 96px;
+  --hero-nombre-tablet: 88px;
+  --hero-nombre-movil: 56px;
+  --hero-nombre-horizontal: 48px;
+  --hero-arte-z: 0;
+  --hero-texto-z: 1;
+  --hero-max-texto: 300px;
+  --hero-max-anticipo: 560px;
+  --hero-ventana-radio: 6px;
+  --hero-ventana-cabecera-max: 12px;
+  --hero-ventana-cabecera-min: 4px;
+  --hero-ventana-cuerpo-gap: 4px;
+  --hero-ventana-texto-min: 4.5px;
+  --hero-ventana-texto-max: 8.5px;
+  --hero-ventana-texto-factor: 0.24;
+  --hero-ventana-linea: 1.3;
+  --hero-entrada-y: 6px;
+  --hero-texto-entrada-y: 8px;
+  --hero-human-entrada-x: 28px;
+  --hero-human-salida-x: 110px;
+  --hero-estrellas-salida-y: -40px;
+  --hero-texto-salida-y: -30px;
+  --hero-anticipo-entrada-y: 40px;
+  --hero-nombre-tracking: -0.025em;
+  --hero-texto-tracking: -0.02em;
+  --hero-fondo-cabecera: var(--hero-cabecera);
+}
+@media (max-width: 1199px) {
+  :root { --hero-nombre: var(--hero-nombre-tablet); }
+}
+@media (max-width: 767px) {
+  :root { --hero-nombre: var(--hero-nombre-movil); }
+}
+@media (max-height: 559px) {
+  :root { --hero-nombre: var(--hero-nombre-horizontal); }
+}

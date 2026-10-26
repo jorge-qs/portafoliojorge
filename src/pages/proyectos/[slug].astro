@@ -1,0 +1,19 @@
+---
+import { obtenerProyectos } from '../../content/consultas';
+import { ordenarProyectos } from '../../content/validacion';
+import Proyecto from '../../vistas/Proyecto.astro';
+export async function getStaticPaths() {
+  const proyectos = ordenarProyectos(await obtenerProyectos('es'));
+  return proyectos.map((proyecto, i) => ({
+    params: { slug: proyecto.slug },
+    props: {
+      proyecto,
+      anterior: proyectos[i - 1],
+      siguiente: proyectos[i + 1],
+    },
+  }));
+}
+const { proyecto, anterior, siguiente } = Astro.props;
+---
+
+<Proyecto proyecto={proyecto} anterior={anterior} siguiente={siguiente} />

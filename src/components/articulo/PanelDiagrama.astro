@@ -1,0 +1,53 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import type { NodoDiagrama } from '../../lib/diagrama';
+import Enlace from '../Enlace.astro';
+interface Props {
+  nodo: NodoDiagrama;
+  idioma: Idioma;
+}
+const { nodo, idioma } = Astro.props;
+---
+
+<div data-panel-diagrama>
+  <p class="kicker">{t(idioma, 'articulo.seleccionado')}</p>
+  <h3 data-nombre-nodo>{nodo.etiqueta}</h3>
+  <dl>
+    {(['responsabilidad', 'entradas_salidas', 'cumple'] as const).map((k) => (
+      <div>
+        <dt>
+          {t(idioma, `articulo.${k === 'entradas_salidas' ? 'entradas' : k}`)}
+        </dt>
+        <dd data-campo-nodo={k}>{nodo[k]}</dd>
+      </div>
+    ))}
+  </dl>
+  <span data-codigo-nodo>
+    <Enlace href={nodo.codigo ?? '#'} idioma={idioma}>
+      {t(idioma, 'articulo.verCodigo')}
+    </Enlace>
+  </span>
+</div>
+<style>
+  h3 {
+    font-size: var(--article-deck);
+    margin-block: var(--space-3);
+    font-weight: 600;
+  }
+  .kicker,
+  dt {
+    color: var(--muted);
+  }
+  .kicker {
+    font-size: var(--text-kicker);
+  }
+  dl {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  dd {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+import { idiomaDe } from '../../i18n/actual';
+const idioma = idiomaDe(Astro);
+interface Props {
+  id?: string;
+  numero?: number;
+  titulo?: string;
+}
+const { id, numero, titulo } = Astro.props;
+---
+
+<h2 id={id} tabindex="-1">
+  {numero !== undefined && `${new Intl.NumberFormat(idioma).format(numero)} · `}
+  {titulo}
+  <slot />
+</h2>

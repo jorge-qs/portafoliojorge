@@ -1,0 +1,95 @@
+---
+import Copiar from './Copiar.astro';
+import { destinoPerfil, esPlaceholder } from '../lib/enlaces';
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  etiqueta: string;
+  valor: string;
+  href: string;
+  idioma: Idioma;
+  correo?: boolean;
+  cv?: boolean;
+}
+const {
+  etiqueta,
+  valor,
+  href,
+  idioma,
+  correo = false,
+  cv = false,
+} = Astro.props;
+const desactivado = esPlaceholder(href);
+---
+
+<div class="fila-contacto">
+  <a
+    href={destinoPerfil(href, correo)}
+    aria-disabled={desactivado ? 'true' : undefined}
+    tabindex={desactivado ? -1 : undefined}
+    target={!correo ? '_blank' : undefined}
+    rel={!correo ? 'noopener' : undefined}
+  >
+    <span class="etiqueta">{etiqueta}</span>
+    <span class="valor">{valor}</span>
+    {!correo && (
+      <>
+        <span class="flecha" aria-hidden="true">
+          {cv ? '↓' : '↗'}
+        </span>
+        <span class="visualmente-oculto">{t(idioma, 'nuevaPestana')}</span>
+      </>
+    )}
+  </a>
+  {correo && <Copiar valor={href} idioma={idioma} />}
+</div>
+<style>
+  .fila-contacto {
+    position: relative;
+    border-top: var(--line-width) solid var(--line);
+  }
+  a {
+    display: grid;
+    grid-template-columns: var(--contact-columns);
+    align-items: center;
+    min-height: var(--contact-row);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .etiqueta {
+    color: var(--heading);
+    font-weight: 500;
+  }
+  .valor {
+    color: var(--muted);
+    overflow-wrap: anywhere;
+    font-size: var(--text-meta);
+  }
+  .flecha {
+    justify-self: end;
+    color: var(--accent);
+  }
+  a:hover .etiqueta {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  .fila-contacto :global(.copia) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    min-height: var(--contact-row);
+    color: var(--accent);
+    background: transparent;
+    border: 0;
+  }
+  @media (max-width: 767px) {
+    a {
+      min-height: var(--accordion-row);
+      grid-template-columns: var(--question-label) minmax(0, 1fr) auto;
+      column-gap: var(--space-2);
+    }
+    .valor {
+      font-size: var(--text-kicker);
+    }
+  }
+</style>

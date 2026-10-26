@@ -1,0 +1,105 @@
+---
+titulo: 'Coordinación multiagente'
+tipo: 'ing'
+anio: '‹año›'
+resumen: 'Orquestador con roles acotados frente a agentes sin coordinación.'
+herramientas:
+  ['PyTorch', 'LLM APIs', 'Python', 'TypeScript', 'FastAPI', 'Docker', 'GCP']
+rol: '‹…›'
+destacado: true
+orden_destacado: 1
+enlaces: {}
+borrador: true
+fecha: '‹fecha›'
+lectura_min: '‹n›'
+---
+
+import EnUnMinuto from '../../../components/articulo/EnUnMinuto.astro';
+import Ficha from '../../../components/articulo/Ficha.astro';
+import Diagrama from '../../../components/articulo/Diagrama.astro';
+import TablaDecisiones from '../../../components/articulo/TablaDecisiones.astro';
+import CodigoAnotado from '../../../components/articulo/CodigoAnotado.astro';
+import Figura from '../../../components/articulo/Figura.astro';
+import NotaMargen from '../../../components/articulo/NotaMargen.astro';
+import Pregunta from '../../../components/articulo/Pregunta.astro';
+import Referencias from '../../../components/articulo/Referencias.astro';
+import { semilla } from '../../articulos/semilla';
+export const {
+  fichaA,
+  minuto,
+  diagrama,
+  decisiones,
+  codigo,
+  anotaciones,
+  pregunta,
+  referencias,
+} = semilla('es');
+
+## 1 · Resumen
+
+<div className="apertura ancho">
+<div>
+<EnUnMinuto {...minuto} />
+</div>
+<div>
+
+## 2 · Ficha
+
+<Ficha {...fichaA} />
+</div>
+</div>
+
+## 3 · Contexto y problema
+
+‹…›
+
+<NotaMargen texto="Nota técnica. Va alineada con su frase. En móvil se abre en línea." />
+
+## 4 · Requisitos
+
+‹…›
+
+## 5 · Arquitectura
+
+<Diagrama
+  modelo={diagrama}
+  descripcion="Usuario se conecta al Orquestador. El Orquestador conecta con Agente A, Agente B, Agente C, Memoria y Herramientas. Agente B conecta también con Herramientas."
+/>
+
+## 6 · Decisiones y alternativas
+
+<TablaDecisiones filas={decisiones} />
+
+## 7 · Implementación
+
+<CodigoAnotado codigo={codigo} archivo="‹archivo›" anotaciones={anotaciones} />
+
+## 8 · Evaluación
+
+<Figura
+  numero={2}
+  leyenda="‹métrica pendiente›. Las barras son de forma, no datos."
+  descripcion="Seis barras ilustrativas: de forma, no datos."
+>
+  <svg viewBox="0 0 560 150" aria-hidden="true">
+    {[52, 70, 38, 64, 80, 46].map((h, i) => (
+      <rect
+        x={i * 90 + 4}
+        y={150 - h * 1.7}
+        width="68"
+        height={h * 1.7}
+        rx="6"
+        fill={i % 2 ? 'var(--formula-weight)' : 'var(--surface-2)'}
+      />
+    ))}
+  </svg>
+</Figura>
+<NotaMargen texto="Metodología: ‹conjunto de tareas›, ‹línea base›, ‹corridas›." />
+
+## 9 · Limitaciones
+
+‹…›
+
+## 10 · Recursos
+
+‹…›

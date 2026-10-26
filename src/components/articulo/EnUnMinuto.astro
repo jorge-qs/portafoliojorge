@@ -1,0 +1,59 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  problema: string;
+  construi: string;
+  resultado: string;
+  idioma?: Idioma;
+}
+const { problema, construi, resultado, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<div class="en-un-minuto">
+  <strong>{t(idioma, 'articulo.minuto')}</strong>
+  <dl>
+    {Object.entries({ problema, construi, resultado }).map(([k, v]) => (
+      <div>
+        <dt>{t(idioma, `articulo.${k}`)} ·</dt>
+        <dd class:list={{ pendiente: v.includes('‹') && k === 'resultado' }}>
+          {v}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</div>
+<style>
+  .en-un-minuto {
+    background: var(--minute-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    font-size: var(--text-ui);
+  }
+  strong {
+    color: var(--heading);
+    font-weight: 600;
+  }
+  dl {
+    margin: var(--space-3) 0 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  dt,
+  dd {
+    display: inline;
+    margin: 0;
+  }
+  dt {
+    color: var(--muted);
+    margin-right: var(--space-1);
+  }
+  .pendiente {
+    color: var(--pending-fg);
+    background: var(--article-pending-bg);
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-tag);
+  }
+</style>

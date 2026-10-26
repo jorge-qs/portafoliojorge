@@ -1,0 +1,129 @@
+---
+titulo: '‹Proyecto destacado 2›'
+tipo: 'inv'
+anio: '‹año›'
+resumen: '‹Qué problema resuelve, en una línea›'
+herramientas:
+  [
+    'PyTorch',
+    'scikit-learn',
+    'Hugging Face',
+    'Python',
+    'NumPy',
+    'Jupyter',
+    'LaTeX',
+  ]
+rol: '‹…›'
+destacado: true
+orden_destacado: 2
+enlaces: {}
+borrador: true
+fecha: '‹fecha›'
+lectura_min: '‹n›'
+investigacion:
+  autores: '‹autor› · ‹coautores›'
+  afiliacion: '‹pendiente›'
+  publicado: '‹fecha›'
+  bibtex: '‹BibTeX pendiente›'
+---
+
+import Ficha from '../../../components/articulo/Ficha.astro';
+import Pregunta from '../../../components/articulo/Pregunta.astro';
+import Formula from '../../../components/articulo/Formula.astro';
+import Experimento from '../../../components/articulo/Experimento.astro';
+import Figura from '../../../components/articulo/Figura.astro';
+import NotaMargen from '../../../components/articulo/NotaMargen.astro';
+import Referencias from '../../../components/articulo/Referencias.astro';
+import Citar from '../../../components/articulo/Citar.astro';
+import { semilla } from '../../articulos/semilla';
+export const { fichaB, pregunta, referencias, bibtex } = semilla('es');
+
+<Ficha {...fichaB} investigacion />
+
+## 1 · Resumen
+
+‹…›
+
+## 2 · Pregunta de investigación
+
+<Pregunta {...pregunta} />
+
+## 3 · Motivación y antecedentes
+
+‹…›
+
+<p id="cita-1" tabIndex={-1}>
+  <a href="#referencia-1">[1]</a>
+</p>
+<NotaMargen texto="[1] ‹Autor, año›. Cita completa al margen." />
+
+## 4 · Fundamentos
+
+<Formula definiciones={['‹definición›','‹definición›','‹definición›']}>
+
+$$
+\htmlClass{formula-prob}{p(y \mid x)} = \operatorname{softmax}(\htmlClass{formula-weight}{W} \cdot \htmlClass{formula-hidden}{h} + b)
+$$
+
+</Formula>
+
+## 5 · Metodología
+
+‹…›
+
+## 6 · Diseño experimental
+
+<Experimento
+  parametro="‹parámetro›"
+  leyenda="Figura 2 · A frente a B. Datos sintéticos de ejemplo."
+/>
+
+## 7 · Resultados
+
+<div className="multiples ancho">
+  {['Tarea 1', 'Tarea 2', 'Tarea 3'].map((t, i) => (
+    <Figura
+      numero={i + 3}
+      leyenda={`${t} · ‹métrica pendiente›`}
+      descripcion={`${t}: comparación ilustrativa de A y B.`}
+      sinteticos
+    >
+      <svg viewBox="0 0 200 150" aria-hidden="true">
+        <rect
+          x="20"
+          y={150 - [55, 40, 70][i] * 1.6}
+          width="66"
+          height={[55, 40, 70][i] * 1.6}
+          fill="var(--plot-a)"
+          opacity="var(--plot-opacity-a)"
+          rx="4"
+        />
+        <rect
+          x="100"
+          y={150 - [72, 48, 66][i] * 1.6}
+          width="66"
+          height={[72, 48, 66][i] * 1.6}
+          fill="var(--plot-b)"
+          opacity="var(--plot-opacity-b)"
+          rx="4"
+        />
+      </svg>
+    </Figura>
+  ))}
+</div>
+
+## 8 · Discusión
+
+‹…›
+
+## 9 · Limitaciones
+
+‹…›
+
+## 10 · Conclusiones y referencias
+
+<p id="cita-2" tabIndex={-1}>
+  <a href="#referencia-2">[2]</a>
+</p>
+<Referencias entradas={referencias} />
+<Citar bibtex={bibtex} />

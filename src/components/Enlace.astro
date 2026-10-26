@@ -1,0 +1,80 @@
+---
+import { esPlaceholder, destinoPerfil } from '../lib/enlaces';
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  href: string;
+  idioma: Idioma;
+  variante?: 'accion' | 'texto' | 'externo' | 'discreto';
+  correo?: boolean;
+  arriba?: boolean;
+  descarga?: boolean;
+}
+const {
+  href,
+  idioma,
+  variante = 'texto',
+  correo = false,
+  arriba = false,
+  descarga = false,
+} = Astro.props;
+const desactivado = esPlaceholder(href);
+const externo = variante === 'externo';
+---
+
+<a
+  class:list={['enlace', variante]}
+  href={destinoPerfil(href, correo)}
+  aria-disabled={desactivado ? 'true' : undefined}
+  tabindex={desactivado ? -1 : undefined}
+  target={externo ? '_blank' : undefined}
+  rel={externo ? 'noopener' : undefined}
+  data-volver-arriba={arriba || undefined}
+>
+  <slot />
+  {externo && (
+    <>
+      <span aria-hidden="true"> ↗</span>
+      <span class="visualmente-oculto"> {t(idioma, 'nuevaPestana')}</span>
+    </>
+  )}
+  {variante === 'accion' && (
+    <span aria-hidden="true"> {arriba ? '↑' : descarga ? '↓' : '→'}</span>
+  )}
+</a>
+<style>
+  .enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--touch-min);
+    text-underline-offset: var(--underline-offset);
+  }
+  .texto {
+    color: var(--link);
+    text-decoration: underline;
+  }
+  .externo {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .accion {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .discreto {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .accion:hover {
+    color: var(--accent-hover);
+  }
+  .texto:hover,
+  .externo:hover,
+  .discreto:hover {
+    color: var(--text);
+  }
+  [aria-disabled='true'] {
+    cursor: default;
+  }
+</style>

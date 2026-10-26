@@ -1,0 +1,45 @@
+---
+import Codigo from '../components/articulo/Codigo.astro';
+import Tabla from '../components/articulo/Tabla.astro';
+import { render, type CollectionEntry } from 'astro:content';
+import ArticuloLayout from '../layouts/ArticuloLayout.astro';
+import Capitulo from '../components/articulo/Capitulo.astro';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  proyecto: CollectionEntry<'proyectos'> & {
+    slug: string;
+    idioma: Idioma;
+    esRespaldo: boolean;
+  };
+  anterior?: CollectionEntry<'proyectos'> & {
+    slug: string;
+    idioma: Idioma;
+    esRespaldo: boolean;
+  };
+  siguiente?: CollectionEntry<'proyectos'> & {
+    slug: string;
+    idioma: Idioma;
+    esRespaldo: boolean;
+  };
+}
+const { proyecto, anterior, siguiente } = Astro.props;
+const { Content, headings } = await render(proyecto);
+---
+
+<ArticuloLayout
+  titulo={proyecto.data.titulo}
+  descripcion={proyecto.data.resumen}
+  idioma={proyecto.idioma}
+  tipo={proyecto.data.tipo}
+  fecha={proyecto.data.fecha}
+  lectura={proyecto.data.lectura_min}
+  capitulos={headings.filter((h) => h.depth === 2)}
+  anterior={anterior}
+  siguiente={siguiente}
+  idiomaContenido={proyecto.esRespaldo ? 'es' : undefined}
+  esRespaldo={proyecto.esRespaldo}
+  canonical={proyecto.esRespaldo ? `/proyectos/${proyecto.slug}/` : undefined}
+  alternativos={proyecto.esRespaldo ? ['es'] : ['es', 'en']}
+>
+  <Content components={{ h2: Capitulo, pre: Codigo, table: Tabla }} />
+</ArticuloLayout>

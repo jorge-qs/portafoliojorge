@@ -1,0 +1,83 @@
+---
+import { ruta } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import type { EntradaProyecto } from '../content/validacion';
+interface Props {
+  proyecto: EntradaProyecto & { slug: string; esRespaldo?: boolean };
+  codigo: string;
+  activa: boolean;
+  idioma: Idioma;
+}
+const { proyecto, codigo, activa, idioma } = Astro.props;
+---
+
+<a
+  class:list={['evidencia', { activa }]}
+  href={ruta(idioma, `proyectos/${proyecto.slug}/`)}
+  data-evidencia={proyecto.slug}
+  data-herramientas={JSON.stringify(proyecto.data.herramientas)}
+>
+  <span class="codigo num">
+    <i class={proyecto.data.tipo} aria-hidden="true"></i>
+    {codigo}
+  </span>
+  <span lang={proyecto.esRespaldo ? 'es' : undefined}>
+    {proyecto.data.titulo}
+  </span>
+</a>
+<style>
+  .evidencia {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--kicker-gap);
+    min-height: var(--evidence-min);
+    border: var(--line-width) solid var(--line);
+    border-radius: var(--radius-md);
+    /* Atenuada: el texto baja a --muted (AA) y solo el punto decorativo usa la
+       opacidad del 30 %. Atenuar toda la tarjeta dejaba el texto en 1,6:1. */
+    color: var(--muted);
+    font-size: var(--text-meta);
+    line-height: var(--evidence-leading);
+    text-decoration: none;
+    transition:
+      color var(--dur) var(--ease-inout),
+      background-color var(--dur) var(--ease-inout);
+    overflow-wrap: anywhere;
+  }
+  .activa {
+    color: var(--heading);
+    background: var(--surface-2);
+    border-color: var(--accent);
+  }
+  .evidencia:hover,
+  .evidencia:focus-visible {
+    color: var(--heading);
+  }
+  .codigo {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--muted);
+    font-size: var(--text-kicker);
+  }
+  i {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    background: var(--eng);
+    opacity: var(--evidence-opacity);
+    transition: opacity var(--dur) var(--ease-inout);
+  }
+  .activa i,
+  .evidencia:hover i,
+  .evidencia:focus-visible i {
+    opacity: 1;
+  }
+  .inv {
+    background: var(--res);
+  }
+  .hib {
+    background: linear-gradient(90deg, var(--eng) 50%, var(--res) 50%);
+  }
+</style>

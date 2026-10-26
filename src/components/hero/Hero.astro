@@ -1,0 +1,741 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import mano from '../../assets/mano-adan-v2.provisional.png';
+import { estrellasBase, ventanasBase } from '../../lib/hero/geometria';
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import EtiquetaTipo from '../EtiquetaTipo.astro';
+
+interface Props {
+  idioma: Idioma;
+  perfil: CollectionEntry<'perfil'>['data'];
+  ventanas: CollectionEntry<'hero'>['data'];
+  proyecto: CollectionEntry<'proyectos'>['data'];
+  relato: CollectionEntry<'relatos'>['data'];
+  total: number;
+}
+
+const {
+  idioma,
+  perfil,
+  ventanas: contenido,
+  proyecto,
+  relato,
+  total,
+} = Astro.props;
+const ventanas = ventanasBase(contenido);
+const estrellas = [
+  { clave: 'd', n: 60, W: 1280, H: 800, mx: 0.53, my: 0.43, hueco: 56 },
+  { clave: 't', n: 50, W: 834, H: 1112, mx: 0.54, my: 0.4, hueco: 40 },
+  { clave: 'm', n: 32, W: 390, H: 844, mx: 0.55, my: 0.37, hueco: 24 },
+].map((config) => ({
+  ...config,
+  puntos: estrellasBase(
+    config.n,
+    config.W,
+    config.H,
+    config.mx,
+    config.my,
+    config.hueco,
+  ),
+}));
+const destacado = seleccionarVentanaCapitulo(relato);
+function seleccionarVentanaCapitulo(entrada: Props['relato']) {
+  return entrada.capitulos[0].titulo;
+}
+
+function estiloVentana(ventana: (typeof ventanas)[number]) {
+  const valores = [
+    `--cx:${ventana.cx}`,
+    `--cy:${ventana.cy}`,
+    `--w:${ventana.w}`,
+    `--h:${ventana.h}`,
+    `--a:${ventana.a}`,
+    `--dx:${ventana.dx}`,
+    `--dy:${ventana.dy}`,
+    `--dr:${ventana.dr}`,
+    `--ord:${ventana.ord}`,
+    `--luz:${0.38 + 0.62 * Math.pow(ventana.ord, 1.3)}`,
+    `--retardo:${0.6 + ventana.ord * 0.9}s`,
+  ];
+  return valores.join(';');
+}
+
+function calcularCabecera(alto: number, escala: number) {
+  return Math.max(4, Math.min((12 * 1.15) / escala, alto * 0.3));
+}
+
+// Líneas que caben en la ventana (nl de renderVals): sin texto si es ilegible.
+function calcularLineas(alto: number, escala: number) {
+  const fs = Math.max(4.5, Math.min((8.5 * 1.15) / escala, alto * 0.24));
+  if (fs * escala < 3.6) return 0;
+  const cabecera = calcularCabecera(alto, escala);
+  return Math.max(0, Math.floor((alto - cabecera - 4) / (fs * 1.3)));
+}
+---
+
+<div class="hero-raiz" data-hero-raiz style="--p:0">
+  <div class="hero-escena">
+    <div class="arte" data-hero-arte aria-hidden="true">
+      <div class="estrellas" data-capa="estrellas">
+        <div class="estrellas-entrada">
+          {estrellas.map((grupo) => (
+            <div class="grupo-estrellas" data-estrellas={grupo.clave}>
+              {grupo.puntos.map((estrella) => (
+                <i
+                  style={`--x:${(estrella.x / grupo.W) * 100}%;--y:${(estrella.y / grupo.H) * 100}%;--z:${estrella.z}px;--o:${estrella.opacidad};--color:var(--${estrella.color})`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mano-humana-entrada">
+        <Image
+          class="mano-humana"
+          src={mano}
+          alt=""
+          width={540}
+          height={320}
+          format="webp"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <div class="mano-artificial" data-capa="mano">
+        {ventanas.map((ventana, indice) => (
+          <div
+            class:list={[
+              'ventana',
+              ventana.brazo && 'ventana--brazo',
+              ventana.punta && 'ventana--punta',
+            ]}
+            data-ventana={indice}
+            data-nombre-d={calcularCabecera(ventana.h, 1.2) * 1.2 >= 3.5}
+            data-nombre-t={calcularCabecera(ventana.h, 0.8) * 0.8 >= 3.5}
+            data-nombre-m={calcularCabecera(ventana.h, 0.44) * 0.44 >= 3.5}
+            style={estiloVentana(ventana)}
+          >
+            <div class="ventana-entrada">
+              <div class="ventana-cabecera">
+                <i class="ventana-punto" />
+                <span class="ventana-nombre">{ventana.texto?.[0]}</span>
+              </div>
+              <div class="ventana-cuerpo">
+                <div class="ventana-lineas">
+                  {ventana.texto?.slice(1).map((linea, i) => (
+                    <span
+                      data-linea-d={i < calcularLineas(ventana.h, 1.2)}
+                      data-linea-t={i < calcularLineas(ventana.h, 0.8)}
+                      data-linea-m={i < calcularLineas(ventana.h, 0.44)}
+                    >
+                      {linea}
+                    </span>
+                  ))}
+                </div>
+                {ventana.punta && <span class="cursor">▍</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <p class="visualmente-oculto" data-hero-descripcion>
+      {t(idioma, 'hero.descripcion')}
+    </p>
+    <div class="texto" data-capa="texto">
+      <div class="texto-entrada">
+        <div class="identidad">
+          <p class="rol">{perfil.rol_hero}</p>
+          <h1 id="hero-titulo">{perfil.nombre_corto}</h1>
+        </div>
+        <div class="mensaje">
+          <p>{perfil.frase_hero}</p>
+          <a href="#proyectos">{t(idioma, 'hero.verProyectos')}</a>
+        </div>
+      </div>
+    </div>
+    <div class="anticipo" data-capa="anticipo" aria-hidden="true">
+      <span class="anticipo-meta">
+        <EtiquetaTipo tipo={proyecto.tipo} idioma={idioma} />
+        <span>{t(idioma, 'hero.proyectoNdeM', { n: 1, total })}</span>
+      </span>
+      <h2>{proyecto.titulo}</h2>
+      <p>{t(idioma, 'hero.capitulo', { n: 1, titulo: destacado })}</p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  if (
+    !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    document.documentElement.dataset.movimiento !== 'reducido'
+  ) {
+    const hero = document.querySelector('[data-hero-raiz]');
+    hero?.classList.add('hero--animado', 'hero--entrada');
+    hero?.setAttribute('data-entrada-iniciada', 'true');
+  }
+</script>
+<script>
+  import { iniciarHero } from '../../lib/hero/transicion';
+  iniciarHero();
+</script>
+
+<style>
+  .hero-raiz {
+    position: relative;
+    width: 100vw;
+    height: 100svh;
+    margin-inline: calc(50% - 50vw);
+    overflow: clip;
+    background: var(--bg);
+    color: var(--text);
+    isolation: isolate;
+    --hero-s: 1.2;
+    --hero-gap: 56px;
+    --hero-rot: -4deg;
+    --hero-mx: 53vw;
+    --hero-my: 43svh;
+    --hero-dx-factor: 1;
+    --hero-hand-k: calc(1.45 * var(--hero-s) / 1.15);
+    --hero-reveal: max(0, min(1, (var(--p) - 0.5) * 2));
+  }
+  .hero-raiz.hero--animado {
+    height: calc(100svh + var(--hero-fijacion));
+  }
+  .hero-raiz.hero--animado .hero-escena {
+    position: sticky;
+    top: 0;
+  }
+  .hero-raiz.hero--moviendo .mano-artificial,
+  .hero-raiz.hero--moviendo .mano-humana,
+  .hero-raiz.hero--moviendo .estrellas {
+    will-change: transform, opacity;
+  }
+  .hero-escena {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: clip;
+  }
+  .arte {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: var(--hero-arte-z);
+  }
+  .estrellas {
+    position: absolute;
+    inset: 0;
+    transform: translateY(calc(var(--p) * var(--hero-estrellas-salida-y)));
+  }
+  .estrellas-entrada {
+    position: absolute;
+    inset: 0;
+  }
+  .grupo-estrellas {
+    display: none;
+    position: absolute;
+    inset: 0;
+  }
+  .grupo-estrellas[data-estrellas='d'] {
+    display: block;
+  }
+  .ventana[data-nombre-d='false'] .ventana-nombre,
+  .ventana-lineas span[data-linea-d='false'] {
+    display: none;
+  }
+  .grupo-estrellas i {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--z);
+    height: var(--z);
+    border-radius: 50%;
+    background: var(--color);
+    opacity: var(--o);
+  }
+  .mano-humana {
+    position: absolute;
+    left: calc(
+      var(--hero-mx) + var(--hero-gap) / 2 - 14px * var(--hero-hand-k)
+    );
+    top: calc(
+      var(--hero-my) + 6px * var(--hero-s) - 170px * var(--hero-hand-k)
+    );
+    width: calc(540px * var(--hero-hand-k));
+    height: calc(320px * var(--hero-hand-k));
+    max-width: none;
+    filter: var(--hero-filtro-mano);
+    opacity: calc(1 - var(--p));
+    transform: translateX(calc(var(--p) * var(--hero-human-salida-x)));
+  }
+  .mano-humana-entrada {
+    position: absolute;
+    inset: 0;
+  }
+  .mano-artificial {
+    position: absolute;
+    left: calc(var(--hero-mx) - var(--hero-gap) / 2 - 812px);
+    top: calc(var(--hero-my) - 197px);
+    width: 1000px;
+    height: 460px;
+    transform: rotate(var(--hero-rot)) scale(var(--hero-s));
+    transform-origin: 812px 197px;
+  }
+  .ventana {
+    position: absolute;
+    left: calc(var(--cx) * 1px - var(--w) * 0.5px);
+    top: calc(var(--cy) * 1px - var(--h) * 0.5px);
+    width: calc(var(--w) * 1px);
+    height: calc(var(--h) * 1px);
+    overflow: hidden;
+    border-radius: min(var(--hero-ventana-radio), calc(var(--h) * 0.18px));
+    background: var(--surface-2);
+    opacity: calc(var(--luz) * (1 - var(--p) * 0.92));
+    transform: translate(
+        calc(var(--dx) * var(--p) * var(--hero-dx-factor) * 1px),
+        calc(var(--dy) * var(--p) * var(--hero-dx-factor) * 1px)
+      )
+      rotate(calc((var(--a) + var(--dr) * var(--p)) * 1deg));
+    box-sizing: border-box;
+    font-family: var(--font-mono);
+    font-size: max(
+      var(--hero-ventana-texto-min),
+      min(
+        calc(var(--hero-ventana-texto-max) * 1.15 / var(--hero-s)),
+        calc(var(--h) * var(--hero-ventana-texto-factor) * 1px)
+      )
+    );
+    line-height: var(--hero-ventana-linea);
+    white-space: nowrap;
+  }
+  .ventana--brazo {
+    align-items: flex-end;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--hero-mascara-opaca) 55%
+    );
+  }
+  .ventana--punta {
+    background-image: linear-gradient(
+      var(--hero-fondo-punta),
+      var(--hero-fondo-punta)
+    );
+  }
+  .ventana-entrada {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .ventana-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    height: max(
+      var(--hero-ventana-cabecera-min),
+      min(
+        calc(var(--hero-ventana-cabecera-max) * 1.15 / var(--hero-s)),
+        calc(var(--h) * 0.3px)
+      )
+    );
+    padding-inline: 0.5em;
+    background: var(--hero-cabecera);
+    color: var(--muted);
+    font-size: min(1em, 0.8em);
+    overflow: hidden;
+  }
+  .ventana--punta .ventana-cabecera {
+    background: var(--hero-cabecera-punta);
+    color: var(--text);
+  }
+  .ventana-punto {
+    display: block;
+    flex: none;
+    width: 0.32em;
+    height: 0.32em;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .ventana--punta .ventana-punto {
+    background: var(--accent);
+  }
+  .ventana-nombre {
+    overflow: hidden;
+  }
+  .ventana-cuerpo {
+    position: relative;
+    padding: 0.25em 0.5em;
+    color: var(--text);
+  }
+  .ventana--brazo .ventana-cabecera {
+    justify-content: flex-end;
+  }
+  .ventana--brazo .ventana-cuerpo {
+    text-align: right;
+  }
+  .ventana--punta .ventana-cuerpo {
+    color: var(--heading);
+  }
+  .ventana-lineas {
+    display: flex;
+    flex-direction: column;
+    height: calc(
+      var(--h) * 1px - var(--hero-ventana-cabecera-max) -
+        var(--hero-ventana-cuerpo-gap)
+    );
+    overflow: hidden;
+  }
+  .ventana-lineas span {
+    flex: none;
+    overflow: hidden;
+  }
+  .cursor {
+    color: var(--accent);
+  }
+  .hero-raiz[data-fase='anticipo'] .cursor {
+    opacity: 0;
+  }
+  .texto {
+    position: absolute;
+    inset: 0;
+    z-index: var(--hero-texto-z);
+    opacity: calc(1 - max(0, min(1, var(--p) * 2)));
+    transform: translateY(calc(var(--p) * var(--hero-texto-salida-y)));
+  }
+  .texto-entrada {
+    position: absolute;
+    inset: 0;
+  }
+  .hero--entrada .estrellas-entrada {
+    animation: hero-aparece var(--dur-hero-estrellas) var(--ease-out) both;
+  }
+  .hero--entrada .mano-humana-entrada {
+    animation: hero-mano var(--dur-hero-mano) var(--ease-out)
+      var(--retardo-hero-mano) both;
+  }
+  .hero--entrada .ventana-entrada {
+    animation: hero-ventana var(--dur-hero) var(--ease-out) var(--retardo) both;
+  }
+  .hero--entrada .texto-entrada {
+    animation: hero-texto var(--dur-hero-texto) var(--ease-out)
+      var(--retardo-hero-texto) both;
+  }
+  .hero--entrada .cursor {
+    animation: hero-cursor var(--dur-hero-cursor) steps(1, end) both;
+  }
+  @keyframes hero-aparece {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes hero-mano {
+    from {
+      opacity: 0;
+      transform: translateX(var(--hero-human-entrada-x));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes hero-ventana {
+    from {
+      opacity: 0;
+      transform: translateY(var(--hero-entrada-y));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes hero-texto {
+    from {
+      opacity: 0;
+      transform: translateY(var(--hero-texto-entrada-y));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes hero-cursor {
+    0%,
+    67.99%,
+    76%,
+    84%,
+    92% {
+      opacity: 0;
+    }
+    68%,
+    75.99%,
+    84.01%,
+    91.99%,
+    100% {
+      opacity: 1;
+    }
+  }
+  .ventana--punta .ventana-lineas {
+    display: inline;
+  }
+  .anticipo {
+    opacity: calc(
+      1 - (1 - var(--hero-reveal)) * (1 - var(--hero-reveal)) *
+        (1 - var(--hero-reveal))
+    );
+    transform: translateY(
+      calc(
+        (
+            1 - (1 - var(--hero-reveal)) * (1 - var(--hero-reveal)) *
+              (1 - var(--hero-reveal))
+          ) *
+          var(--hero-anticipo-entrada-y)
+      )
+    );
+  }
+  .identidad,
+  .mensaje {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+  }
+  .identidad {
+    left: var(--space-8);
+    bottom: 56px;
+    gap: var(--space-1);
+  }
+  .rol {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--text-ui);
+  }
+  h1 {
+    margin: 0;
+    color: var(--heading);
+    font-size: var(--hero-nombre);
+    font-weight: 600;
+    letter-spacing: var(--hero-nombre-tracking);
+    line-height: 1;
+  }
+  .mensaje {
+    right: var(--space-8);
+    bottom: var(--space-8);
+    gap: 14px;
+    max-width: var(--hero-max-texto);
+  }
+  .mensaje p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .mensaje a {
+    color: var(--accent);
+    font-size: var(--text-ui);
+    text-decoration: none;
+  }
+  .anticipo {
+    position: absolute;
+    left: var(--space-8);
+    bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: var(--hero-max-anticipo);
+  }
+  .anticipo-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--eng);
+    font-size: var(--text-kicker);
+  }
+  .anticipo h2 {
+    margin: 0;
+    color: var(--heading);
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: var(--hero-texto-tracking);
+    line-height: 1.15;
+  }
+  .anticipo p {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  @media (max-width: 1199px) {
+    .hero-raiz {
+      --hero-s: 0.8;
+      --hero-gap: 40px;
+      --hero-rot: -5deg;
+      --hero-mx: 54vw;
+      --hero-my: 40svh;
+    }
+    .grupo-estrellas[data-estrellas='d'] {
+      display: none;
+    }
+    .ventana[data-nombre-d] .ventana-nombre,
+    .ventana-lineas span[data-linea-d] {
+      display: initial;
+    }
+    .ventana[data-nombre-t='false'] .ventana-nombre,
+    .ventana-lineas span[data-linea-t='false'] {
+      display: none;
+    }
+    .grupo-estrellas[data-estrellas='t'] {
+      display: block;
+    }
+    .texto-entrada {
+      inset: auto 40px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .identidad,
+    .mensaje {
+      position: static;
+    }
+    .identidad {
+      gap: var(--space-3);
+    }
+    .mensaje {
+      max-width: 440px;
+      gap: var(--space-3);
+    }
+    .mensaje p {
+      font-size: 18px;
+    }
+    .mensaje a {
+      min-height: var(--touch-min);
+    }
+    .anticipo {
+      left: 40px;
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-raiz {
+      --hero-s: 0.44;
+      --hero-gap: 24px;
+      --hero-rot: -6deg;
+      --hero-mx: 55vw;
+      --hero-my: 37svh;
+      --hero-dx-factor: 0.5;
+      --hero-fijacion: var(--hero-fijacion-movil);
+    }
+    .grupo-estrellas[data-estrellas='t'] {
+      display: none;
+    }
+    .grupo-estrellas[data-estrellas='m'] {
+      display: block;
+    }
+    .texto-entrada {
+      inset: auto 20px 28px;
+      gap: 10px;
+    }
+    .identidad {
+      gap: 10px;
+    }
+    .rol {
+      font-size: 13px;
+    }
+    .mensaje {
+      gap: 0;
+    }
+    .mensaje p {
+      font-size: 16px;
+    }
+    .mensaje a {
+      display: flex;
+      align-items: center;
+    }
+    .anticipo {
+      left: 20px;
+      right: 20px;
+      bottom: 72px;
+    }
+    .anticipo h2 {
+      font-size: 28px;
+    }
+    .ventana-lineas {
+      display: none;
+    }
+    .ventana[data-nombre-t] .ventana-nombre {
+      display: initial;
+    }
+    .ventana[data-nombre-m='false'] .ventana-nombre {
+      display: none;
+    }
+  }
+  @media (max-height: 559px) {
+    .ventana[data-nombre-t] .ventana-nombre {
+      display: initial;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero--entrada .estrellas-entrada,
+    .hero--entrada .mano-humana-entrada,
+    .hero--entrada .ventana-entrada,
+    .hero--entrada .texto-entrada,
+    .hero--entrada .cursor {
+      animation: none;
+    }
+    .cursor {
+      opacity: 1;
+    }
+  }
+  :global(html[data-movimiento='reducido']) .hero--entrada .estrellas-entrada,
+  :global(html[data-movimiento='reducido']) .hero--entrada .mano-humana-entrada,
+  :global(html[data-movimiento='reducido']) .hero--entrada .ventana-entrada,
+  :global(html[data-movimiento='reducido']) .hero--entrada .texto-entrada,
+  :global(html[data-movimiento='reducido']) .hero--entrada .cursor {
+    animation: none;
+  }
+  :global(html[data-movimiento='reducido']) .cursor {
+    opacity: 1;
+  }
+  @media (max-height: 559px) {
+    .hero-raiz {
+      --hero-mx: 52vw;
+      --hero-my: 46svh;
+      --hero-s: 0.8;
+      --hero-gap: 40px;
+      --hero-rot: -5deg;
+    }
+    .texto-entrada {
+      inset: auto 40px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .identidad,
+    .mensaje {
+      position: static;
+    }
+    .identidad {
+      gap: var(--space-3);
+    }
+    .texto-entrada {
+      left: 40px;
+      right: calc(
+        100% - (var(--hero-mx) - 2 * var(--hero-gap) - var(--space-1))
+      );
+    }
+    .anticipo {
+      left: 40px;
+    }
+    .grupo-estrellas[data-estrellas='m'] {
+      display: none;
+    }
+    .grupo-estrellas[data-estrellas='t'] {
+      display: block;
+    }
+    .hero-raiz {
+      --hero-dx-factor: 1;
+    }
+  }
+</style>

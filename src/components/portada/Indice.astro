@@ -1,0 +1,92 @@
+---
+import type { Seccion } from '../../config/secciones';
+import type { Idioma } from '../../i18n/config';
+import type { EntradaProyecto } from '../../content/validacion';
+import { codigoProyecto } from '../../content/validacion';
+import { obtenerConRespaldo } from '../../content/consultas';
+import { t } from '../../i18n';
+import EncabezadoSeccion from '../EncabezadoSeccion.astro';
+import FiltroSegmentado from '../FiltroSegmentado.astro';
+import FilaIndice from '../FilaIndice.astro';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  proyectos: (EntradaProyecto & { slug: string })[];
+}
+const { seccion, idioma, proyectos } = Astro.props;
+const { data: contenido } = await obtenerConRespaldo('portada', idioma);
+---
+
+<div class="cabecera">
+  <div class="introduccion">
+    <EncabezadoSeccion seccion={seccion} idioma={idioma} />
+    <p data-borrador={contenido.borrador}>{contenido.indice_entradilla}</p>
+  </div>
+  <FiltroSegmentado idioma={idioma} proyectos={proyectos} />
+</div>
+<div class="columnas" aria-hidden="true">
+  <span>#</span>
+  <span>{t(idioma, 'portada.proyecto')}</span>
+  <span>{t(idioma, 'portada.tipo')}</span>
+  <span class="anio">{t(idioma, 'portada.anio')}</span>
+  <span class="herramientas">{t(idioma, 'portada.herramientas')}</span>
+  <span></span>
+</div>
+<ol class="lista-indice">
+  {proyectos.map((p, i) => (
+    <FilaIndice proyecto={p} codigo={codigoProyecto(i)} idioma={idioma} />
+  ))}
+</ol>
+<style>
+  .cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--section-block-gap);
+    margin-bottom: var(--section-block-gap);
+  }
+  .introduccion {
+    max-width: var(--intro-max);
+  }
+  p {
+    margin-top: var(--kicker-gap);
+    color: var(--muted);
+  }
+  .columnas {
+    display: grid;
+    grid-template-columns: var(--index-columns);
+    gap: var(--space-5);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: var(--line-width) solid var(--line);
+  }
+  @media (max-width: 1199px) {
+    .cabecera {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+    .columnas {
+      display: none;
+    }
+    .anio,
+    .herramientas {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .columnas {
+      display: none;
+    }
+    .cabecera {
+      margin-bottom: var(--space-5);
+      gap: var(--space-5);
+    }
+  }
+</style>

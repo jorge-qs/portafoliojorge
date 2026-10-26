@@ -1,0 +1,364 @@
+main:has(.articulo-reticula) {
+  max-width: none;
+  padding: calc(var(--nav-h) + var(--space-7)) var(--page-margin) var(--space-7);
+}
+.articulo-reticula {
+  max-width: var(--article-max);
+  margin: auto;
+  display: grid;
+  grid-template-columns: var(--article-rail) minmax(0, 1fr);
+  gap: 0 var(--article-gap);
+  align-items: start;
+}
+.indice-articulo {
+  position: sticky;
+  top: var(--anchor-offset);
+  font-size: var(--text-kicker);
+  line-height: 1.4;
+}
+.indice-articulo a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.volver-indice {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+.indice-articulo ol,
+.lista-capitulos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.indice-articulo nav a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+a[data-capitulo][aria-current] {
+  color: var(--heading);
+  background: var(--chapter-current);
+  font-weight: 500;
+}
+.indice-articulo p {
+  margin-top: var(--space-5);
+  color: var(--muted);
+}
+.articulo {
+  min-width: 0;
+}
+.cabecera-articulo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kicker-gap);
+  margin-bottom: var(--nav-hero-padding);
+}
+.metadatos {
+  font-size: var(--text-meta);
+  color: var(--muted);
+}
+.etiqueta-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.etiqueta-tipo::before {
+  content: '';
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: 50%;
+  background: currentColor;
+}
+.etiqueta-tipo.ing {
+  color: var(--eng);
+}
+.etiqueta-tipo.inv {
+  color: var(--res);
+}
+.etiqueta-tipo.hib::before {
+  background: linear-gradient(to right, var(--eng) 50%, var(--res) 50%);
+}
+.cabecera-articulo h1 {
+  max-width: 820px;
+  font-size: var(--article-title);
+  font-weight: 600;
+  line-height: var(--article-title-leading);
+  letter-spacing: var(--article-title-tracking);
+}
+.entradilla {
+  max-width: var(--article-reading);
+  font-size: var(--article-deck);
+  line-height: var(--article-deck-leading);
+}
+.cuerpo-articulo {
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-reading)) var(--article-margin);
+  gap: 0 var(--article-gap);
+  line-height: var(--article-body-leading);
+}
+.cuerpo-articulo > * {
+  grid-column: 1;
+  min-width: 0;
+}
+.cuerpo-articulo > p {
+  margin-block: var(--space-2) var(--space-4);
+}
+.cuerpo-articulo > .ancho {
+  grid-column: 1 / -1;
+}
+.cuerpo-articulo h2 {
+  margin: var(--nav-h) 0 var(--space-4);
+  font-size: var(--chapter-title);
+  letter-spacing: var(--section-tracking);
+  line-height: var(--chapter-leading);
+  font-weight: 600;
+}
+.cuerpo-articulo h2:first-child {
+  margin-top: 0;
+}
+.cuerpo-articulo > .nota-margen {
+  grid-column: 2;
+}
+.apertura {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--article-margin);
+  gap: var(--article-gap);
+}
+.apertura h2 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-meta);
+  color: var(--muted);
+}
+.cuerpo-articulo .resumen-titulo {
+  font-size: var(--text-meta);
+  color: var(--muted);
+  margin: 0 0 var(--space-3);
+}
+.articulos-adyacentes {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--anchor-offset);
+}
+.articulos-adyacentes a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  color: var(--heading);
+  text-decoration: none;
+}
+.articulos-adyacentes a:hover {
+  background: var(--surface-2);
+}
+.articulos-adyacentes span {
+  font-size: var(--text-kicker);
+  color: var(--muted);
+}
+.articulos-adyacentes strong {
+  font-size: var(--article-deck-mobile);
+  font-weight: 500;
+}
+.articulos-adyacentes [data-siguiente] {
+  text-align: right;
+  grid-column: 2;
+}
+.lista-capitulos a {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+  padding-inline: var(--space-2);
+  font-size: var(--text-meta);
+}
+.opciones-etiqueta,
+.preferencia-ayuda {
+  font-size: var(--text-kicker);
+  color: var(--muted);
+  margin-block: var(--space-3);
+}
+.reducir-movimiento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: var(--touch-min);
+  margin-top: var(--space-5);
+}
+.reducir-movimiento input {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  accent-color: var(--accent);
+}
+.nota.articulo-reticula {
+  display: block;
+  max-width: calc(
+    var(--article-reading) + var(--article-margin) + var(--article-gap)
+  );
+}
+.cambio-tema,
+.cambio-tema body,
+.cambio-tema .articulo *,
+.cambio-tema [data-barra-global],
+.cambio-tema .hoja-inferior,
+.cambio-tema footer {
+  transition:
+    background-color var(--dur) var(--ease-inout),
+    color var(--dur) var(--ease-inout);
+}
+html[data-movimiento='reducido'] *,
+html[data-movimiento='reducido'] *::before,
+html[data-movimiento='reducido'] *::after {
+  animation-duration: var(--dur) !important;
+  transition-duration: var(--dur) !important;
+}
+@media (min-width: 1200px) {
+  .cuerpo-articulo {
+    grid-template-columns: minmax(0, 1fr) var(--article-margin);
+  }
+}
+@media (max-width: 1199px) {
+  main:has(.articulo-reticula) {
+    padding-inline: var(--space-6);
+  }
+  .articulo-reticula {
+    display: block;
+  }
+  .indice-articulo {
+    display: none;
+  }
+  .cuerpo-articulo {
+    grid-template-columns: minmax(0, 1fr) var(--article-margin);
+    gap: 0 var(--space-5);
+  }
+  .apertura {
+    gap: var(--space-5);
+  }
+}
+@media (max-width: 767px) {
+  main:has(.articulo-reticula) {
+    padding: calc(var(--nav-h) + var(--space-5)) var(--page-margin-mobile)
+      var(--space-7);
+  }
+  .cabecera-articulo h1 {
+    font-size: var(--article-title-mobile);
+  }
+  .entradilla {
+    font-size: var(--article-deck-mobile);
+  }
+  .cuerpo-articulo {
+    display: block;
+  }
+  .cuerpo-articulo h2 {
+    font-size: var(--chapter-title-mobile);
+    margin-top: var(--space-7);
+  }
+  .apertura {
+    display: block;
+  }
+  .apertura > div + div {
+    margin-top: var(--space-5);
+  }
+  .articulos-adyacentes {
+    margin-top: var(--space-7);
+  }
+  .articulos-adyacentes a {
+    padding: var(--space-4);
+  }
+  .articulos-adyacentes strong {
+    overflow-wrap: anywhere;
+  }
+  .cuerpo-articulo > * {
+    margin-bottom: var(--space-4);
+  }
+}
+.multiples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+@media (max-width: 767px) {
+  .multiples {
+    grid-template-columns: 1fr;
+  }
+}
+/* Resumen y ficha conservan sus anclas y encabezados para navegación asistida. */
+/* Por estructura y no por id: el id cambia con el idioma (1--resumen, 1--summary). */
+.articulo[data-plantilla='A'] .cuerpo-articulo > h2:first-of-type,
+.apertura h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+.articulo[data-plantilla='B'] .cuerpo-articulo > h2:first-of-type {
+  font-size: var(--text-meta);
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.interruptor {
+  position: relative;
+  display: inline-flex;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  align-items: center;
+}
+.interruptor input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+.interruptor-pista {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--switch-height);
+  border-radius: var(--radius-sheet);
+  background: var(--surface-2);
+}
+.interruptor-pista::after {
+  content: '';
+  position: absolute;
+  top: var(--switch-inset);
+  left: var(--switch-inset);
+  width: var(--switch-thumb);
+  height: var(--switch-thumb);
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform var(--dur-fast) var(--ease-inout);
+}
+.interruptor input:checked + .interruptor-pista {
+  background: var(--text);
+}
+.interruptor input:checked + .interruptor-pista::after {
+  transform: translateX(var(--switch-travel));
+  background: var(--bg);
+}
+.interruptor:has(input:focus-visible) {
+  outline: var(--active-line) solid var(--accent);
+  outline-offset: var(--underline-offset);
+  border-radius: var(--radius-sm);
+}
+.cuerpo-articulo p[id^='cita-'] a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+}
+@media (max-width: 767px) {
+  body:has([data-articulo]) footer a,
+  .articulo .ficha a {
+    min-width: var(--touch-min);
+  }
+}

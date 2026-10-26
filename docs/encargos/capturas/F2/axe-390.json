@@ -1,0 +1,478 @@
+{
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "tags": [
+        "cat.color",
+        "wcag2aa",
+        "wcag143",
+        "TTv5",
+        "TT13.c",
+        "EN-301-549",
+        "EN-9.1.4.3",
+        "ACT",
+        "RGAAv4",
+        "RGAA-3.2.1"
+      ],
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"coordinacion-multiagente\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">↑</span>",
+          "target": [
+            ".destacado.fila:nth-child(1) > .relato[data-astro-cid-vtrlwsru=\"\"] > .discreto.enlace[href$=\"/#proyectos\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-02\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">↑</span>",
+          "target": [
+            ".destacado.fila:nth-child(2) > .relato[data-astro-cid-vtrlwsru=\"\"] > .discreto.enlace[href$=\"/#proyectos\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-03\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">↑</span>",
+          "target": [
+            ".destacado.fila:nth-child(3) > .relato[data-astro-cid-vtrlwsru=\"\"] > .discreto.enlace[href$=\"/#proyectos\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-04\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-05\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-06\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-vtrlwsru=\"\">→</span>",
+          "target": [
+            "a[data-proyecto=\"proyecto-07\"] > .accion[data-astro-cid-vtrlwsru=\"\"] > span[aria-hidden=\"true\"][data-astro-cid-vtrlwsru=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span class=\"menos\" aria-hidden=\"true\" data-astro-cid-fnsobcnv=\"\">−</span>",
+          "target": [
+            "details[open=\"\"] > summary > .estado[data-astro-cid-fnsobcnv=\"\"] > .menos[data-astro-cid-fnsobcnv=\"\"][aria-hidden=\"true\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "7.5pt (10px)",
+                "fontWeight": "normal",
+                "messageKey": "bgOverlap",
+                "expectedContrastRatio": "4.5:1"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because it is overlapped by another element"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<div class=\"terminal-barra\" data-astro-cid-nfcye6dq=\"\"><i data-astro-cid-nfcye6dq=\"\"></i>agente</div>",
+          "target": [
+            ".terminal-barra"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "7.5pt (10px)",
+                "fontWeight": "normal",
+                "messageKey": "bgOverlap",
+                "expectedContrastRatio": "4.5:1"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because it is overlapped by another element"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<div class=\"comando\" data-astro-cid-nfcye6dq=\"\">$ contacto<br data-astro-cid-nfcye6dq=\"\"><span data-astro-cid-nfcye6dq=\"\">▍</span></div>",
+          "target": [
+            ".comando"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span data-astro-cid-nfcye6dq=\"\">▍</span>",
+          "target": [
+            "span[data-astro-cid-nfcye6dq=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "9.8pt (13px)",
+                "fontWeight": "normal",
+                "messageKey": "imgNode",
+                "expectedContrastRatio": "4.5:1"
+              },
+              "relatedNodes": [
+                {
+                  "html": "<svg class=\"estrellas\" viewBox=\"0 0 1280 800\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\" data-astro-cid-tuzpe2ks=\"\">",
+                  "target": [
+                    ".estrellas"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because element contains an image node"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span class=\"num\" data-astro-cid-jskvxmn4=\"\">06</span>",
+          "target": [
+            ".contenido-contacto > .encabezado-seccion[data-astro-cid-jskvxmn4=\"\"] > .kicker > .num[data-astro-cid-jskvxmn4=\"\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "9.8pt (13px)",
+                "fontWeight": "normal",
+                "messageKey": "imgNode",
+                "expectedContrastRatio": "4.5:1"
+              },
+              "relatedNodes": [
+                {
+                  "html": "<svg class=\"estrellas\" viewBox=\"0 0 1280 800\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\" data-astro-cid-tuzpe2ks=\"\">",
+                  "target": [
+                    ".estrellas"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because element contains an image node"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span data-astro-cid-jskvxmn4=\"\">Contacto</span>",
+          "target": [
+            ".contenido-contacto > .encabezado-seccion[data-astro-cid-jskvxmn4=\"\"] > .kicker > span[data-astro-cid-jskvxmn4=\"\"]:nth-child(2)"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "22.5pt (30px)",
+                "fontWeight": "normal",
+                "messageKey": "imgNode",
+                "expectedContrastRatio": "3:1"
+              },
+              "relatedNodes": [
+                {
+                  "html": "<svg class=\"estrellas\" viewBox=\"0 0 1280 800\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\" data-astro-cid-tuzpe2ks=\"\">",
+                  "target": [
+                    ".estrellas"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because element contains an image node"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<h2 id=\"contacto-titulo\" tabindex=\"-1\" data-astro-cid-jskvxmn4=\"\">Si estás construyendo algo parecido, hablemos.</h2>",
+          "target": [
+            "#contacto-titulo"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "contrastRatio": 0,
+                "fontSize": "9.8pt (13px)",
+                "fontWeight": "normal",
+                "messageKey": "imgNode",
+                "expectedContrastRatio": "4.5:1"
+              },
+              "relatedNodes": [
+                {
+                  "html": "<svg class=\"estrellas\" viewBox=\"0 0 1280 800\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\" data-astro-cid-tuzpe2ks=\"\">",
+                  "target": [
+                    ".estrellas"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element's background color could not be determined because element contains an image node"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<p class=\"borrador\" data-astro-cid-nfcye6dq=\"\">borrador · reescribir con tu voz</p>",
+          "target": [
+            ".borrador"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+        },
+        {
+          "any": [
+            {
+              "id": "color-contrast",
+              "data": {
+                "messageKey": "nonBmp"
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Element content contains only non-text characters"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<span aria-hidden=\"true\" data-astro-cid-lfss2zgl=\"\">↑</span>",
+          "target": [
+            "span[data-astro-cid-lfss2zgl=\"\"][aria-hidden=\"true\"]"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters"
+        }
+      ]
+    }
+  ],
+  "reglasCorrectas": 41
+}

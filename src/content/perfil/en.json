@@ -1,0 +1,38 @@
+{
+  "nombre": "Jorge Quenta",
+  "nombre_corto": "Jorge",
+  "rol_hero": "AI Engineer · data scientist · investigador",
+  "anio_copyright": "‹año›",
+  "frase_hero": "I build AI systems and explain how they work.",
+  "presentacion": "I am Jorge Quenta, an AI Engineer, data scientist, and researcher. ‹Two sentences in your voice: where you work or study today and what sparks your curiosity.›",
+  "preguntas": [
+    {
+      "tipo": "Engineering",
+      "texto": "How can multiple agents coordinate without losing control of the outcome?"
+    },
+    {
+      "tipo": "Research",
+      "texto": "‹A brief question you would like to answer›"
+    },
+    {
+      "tipo": "Open-ended",
+      "texto": "‹Optional: a curiosity outside work›"
+    }
+  ],
+  "trayectoria": [
+    "‹20XX — present› ‹Role› · ‹Organization›",
+    "‹20XX — 20XX› ‹Role› · ‹Organization›",
+    "‹20XX› ‹Education› · ‹Institution›"
+  ],
+  "cv": {
+    "url": "‹…›",
+    "fecha": "‹month year›"
+  },
+  "contacto": {
+    "email": "‹nombre›@‹dominio›",
+    "github": "github.com/‹usuario›",
+    "linkedin": "linkedin.com/in/‹usuario›"
+  },
+  "borrador": true,
+  "frase_contacto": "If you are building something similar, let us talk."
+}

@@ -1,0 +1,201 @@
+---
+import EtiquetaTipo from './EtiquetaTipo.astro';
+import Enlace from './Enlace.astro';
+import { ruta, t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import type { EntradaProyecto } from '../content/validacion';
+interface Props {
+  proyecto: EntradaProyecto & { slug: string; esRespaldo?: boolean };
+  codigo: string;
+  idioma: Idioma;
+}
+const {
+  proyecto: { data: p, slug },
+  codigo,
+  idioma,
+} = Astro.props;
+const herramientas = p.herramientas.slice(0, 3);
+const esRespaldo = Astro.props.proyecto.esRespaldo === true;
+---
+
+<li data-tipo={p.tipo} class:list={['fila', { destacado: p.destacado }]}>
+  <a
+    class="fila-indice"
+    data-proyecto={slug}
+    href={ruta(idioma, `proyectos/${slug}/`)}
+  >
+    <span class="codigo num">{codigo}</span>
+    <span class="proyecto">
+      <span class="titulo" lang={esRespaldo ? 'es' : undefined}>
+        {p.titulo}
+      </span>
+      <span class="resumen" lang={esRespaldo ? 'es' : undefined}>
+        {p.resumen}
+      </span>
+    </span>
+    <span class="tipo">
+      <EtiquetaTipo tipo={p.tipo} idioma={idioma} />
+      {esRespaldo && (
+        <span class="etiqueta-idioma-respaldo" lang="es">
+          ES
+        </span>
+      )}
+    </span>
+    <span class="anio num">
+      {typeof p.anio === 'number'
+        ? new Intl.NumberFormat(idioma, { useGrouping: false }).format(p.anio)
+        : p.anio}
+    </span>
+    <span class="herramientas">
+      {herramientas.join(' · ')}
+      {p.herramientas.length > herramientas.length &&
+        ` +${new Intl.NumberFormat(idioma).format(p.herramientas.length - herramientas.length)}`}
+    </span>
+    <span class="accion">
+      {t(idioma, 'portada.leer')} <span aria-hidden="true">→</span>
+    </span>
+  </a>
+  {p.destacado && (
+    <div class="relato">
+      <Enlace
+        idioma={idioma}
+        href={`${ruta(idioma)}#relato-${slug}`}
+        variante="discreto"
+      >
+        {t(idioma, 'portada.relato')} <span aria-hidden="true">↑</span>
+      </Enlace>
+    </div>
+  )}
+</li>
+<style>
+  .fila {
+    position: relative;
+    border-top: var(--line-width) solid var(--line);
+  }
+  .fila-indice {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: var(--index-columns);
+    gap: var(--space-5);
+    align-items: baseline;
+    padding-block: var(--row-padding);
+    color: var(--text);
+    text-decoration: none;
+    font-size: var(--text-meta);
+  }
+  .fila-indice::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: var(--art-layer);
+    background: var(--surface);
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-inout);
+  }
+  .fila-indice > span {
+    position: relative;
+    z-index: var(--content-layer);
+  }
+  .codigo,
+  .resumen,
+  .anio,
+  .herramientas {
+    color: var(--muted);
+  }
+  .proyecto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+  .titulo {
+    font-size: var(--text-project);
+    font-weight: 500;
+    color: var(--heading);
+  }
+  .resumen {
+    line-height: var(--question-leading);
+  }
+  .herramientas {
+    overflow-wrap: anywhere;
+  }
+  .etiqueta-idioma-respaldo {
+    margin-inline-start: var(--space-2);
+    color: var(--muted);
+    font-size: var(--text-kicker);
+  }
+  .accion {
+    justify-self: end;
+    color: var(--accent);
+  }
+  .relato {
+    position: absolute;
+    right: 0;
+    bottom: var(--space-2);
+    font-size: var(--text-meta);
+  }
+  .destacado .accion {
+    padding-bottom: var(--space-6);
+  }
+  .fila-indice:hover::before {
+    opacity: 1;
+  }
+  .fila-indice:hover .titulo {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: var(--underline-offset);
+  }
+  .fila-indice:hover .accion {
+    color: var(--accent-hover);
+  }
+  @media (max-width: 1199px) {
+    .fila-indice {
+      grid-template-columns: var(--index-columns-tablet);
+    }
+    .anio,
+    .herramientas {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .fila-indice {
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-2);
+      padding-block: var(--space-4);
+    }
+    .codigo {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .tipo {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .anio {
+      display: block;
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .proyecto {
+      grid-column: 1 / -1;
+    }
+    .titulo {
+      font-size: var(--text-body-about);
+    }
+    .accion {
+      grid-column: 1 / -1;
+      min-height: var(--touch-min);
+      display: flex;
+      align-items: center;
+    }
+    .destacado .accion {
+      padding: 0;
+    }
+    .relato {
+      left: 0;
+      right: auto;
+      bottom: var(--space-4);
+    }
+  }
+</style>

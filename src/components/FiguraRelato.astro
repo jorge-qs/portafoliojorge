@@ -1,0 +1,162 @@
+---
+import DiagramaSVG from './DiagramaSVG.astro';
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import type { Relato } from '../content/esquemas';
+import type { EstadoFiguraRelato } from '../lib/diagrama';
+interface Props {
+  relato: Relato;
+  estado: EstadoFiguraRelato;
+  capitulo: number;
+  idioma: Idioma;
+  dinamica?: boolean;
+}
+const { relato, estado, capitulo, idioma, dinamica = false } = Astro.props;
+const modelo = dinamica
+  ? relato.diagrama
+  : {
+      ...relato.diagrama,
+      aristas: relato.diagrama.aristas.filter(
+        ([a, b]) =>
+          !estado.aristasVisibles ||
+          estado.aristasVisibles.some(([x, y]) => a === x && b === y),
+      ),
+    };
+const resultados = relato.capitulos[3].resultados;
+---
+
+<div class="figura-contenido" data-visual-capitulo={capitulo}>
+  <div
+    class="dibujo"
+    data-relato-figura
+    data-modelo={JSON.stringify(relato.diagrama)}
+    inert
+    aria-hidden="true"
+  >
+    <DiagramaSVG modelo={modelo} estado={estado} viewBox="0 0 480 420" />
+  </div>
+  <div class="resultados" data-relato-resultados>
+    <div class="leyenda" data-relato-leyenda>
+      <span>
+        <i class="base"></i>
+        {t(idioma, 'relato.sin')}
+      </span>
+      <span>
+        <i class="sistema"></i>
+        {t(idioma, 'relato.con')}
+      </span>
+      {resultados.some((r) => r.sintetico) && (
+        <span class="sinteticos">{t(idioma, 'relato.sinteticos')}</span>
+      )}
+    </div>
+    <svg viewBox="0 0 480 340" aria-hidden="true">
+      {resultados.map((r, i) => {
+        const valor = typeof r.valor === 'number' ? r.valor : 0;
+        const x = 78 + Math.floor(i / 2) * 138 + (i % 2) * 38;
+        return (
+          <g>
+            <rect
+              class:list={['barra', i % 2 ? 'sistema' : 'base']}
+              x={x}
+              y={280 - valor * 2.6}
+              width="30"
+              height={valor * 2.6}
+              rx="4"
+            />
+            <text x={x + 15} y={268 - valor * 2.6} text-anchor="middle">
+              {typeof r.valor === 'number'
+                ? new Intl.NumberFormat(idioma, { style: 'percent' }).format(
+                    r.valor / 100,
+                  )
+                : r.valor}
+            </text>
+            {i % 2 === 0 && (
+              <text x={x + 34} y="310" text-anchor="middle">
+                {r.etiqueta}
+              </text>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+</div>
+<style>
+  .figura-contenido {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+  }
+  .dibujo,
+  .resultados {
+    height: 100%;
+  }
+  .dibujo {
+    transition: opacity var(--dur-fast) var(--ease-inout);
+  }
+  .resultados {
+    display: none;
+    flex-direction: column;
+  }
+  [data-visual-capitulo='4'] .dibujo {
+    display: none;
+  }
+  [data-visual-capitulo='4'] .resultados {
+    display: flex;
+    animation: aparecer var(--dur) var(--ease-out);
+  }
+  .resultados svg {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+  }
+  .leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-kicker);
+    line-height: var(--evidence-leading);
+  }
+  .leyenda span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .leyenda i {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    flex-shrink: 0;
+    border-radius: var(--radius-tag);
+  }
+  .base {
+    background: var(--muted);
+    fill: var(--muted);
+  }
+  .sistema {
+    background: var(--plot-b);
+    fill: var(--plot-b);
+  }
+  .sinteticos {
+    color: var(--eng);
+  }
+  text {
+    fill: var(--text);
+    font: var(--text-kicker) var(--font-sans);
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .resultados {
+      animation: none !important;
+    }
+  }
+</style>

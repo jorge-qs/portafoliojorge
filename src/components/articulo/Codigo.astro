@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { t } from '../../i18n';
+import { siguienteBloque } from '../../lib/bloques-articulo';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props extends HTMLAttributes<'pre'> {
+  idioma?: Idioma;
+}
+const { idioma: idiomaProp, ...atributos } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+const numero = siguienteBloque(Astro.locals, 'codigo');
+---
+
+{/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Código desplazable accesible con teclado. */}
+<div
+  class="codigo-mdx"
+  role="region"
+  tabindex="0"
+  aria-label={t(idioma, 'articulo.codigoNumerado', { n: numero })}
+>
+  <pre {...atributos}><slot /></pre>
+</div>
+<style>
+  .codigo-mdx {
+    max-width: 100%;
+    min-width: 0;
+    overflow: auto;
+    padding: var(--space-5);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+  }
+  pre,
+  pre :global(code) {
+    margin: 0;
+    font: var(--code-size)/var(--code-leading) var(--font-mono);
+  }
+</style>

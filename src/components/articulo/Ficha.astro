@@ -1,0 +1,74 @@
+---
+import { t, formatearFecha } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+import Enlace from '../Enlace.astro';
+interface Props {
+  campos: { clave: string; valor: string }[];
+  recursos: { clave: string; url: string }[];
+  investigacion?: boolean;
+  idioma?: Idioma;
+}
+const {
+  campos,
+  recursos,
+  investigacion = false,
+  idioma: idiomaProp,
+} = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+---
+
+<dl class:list={['ficha', { investigacion, ancho: investigacion }]}>
+  {campos.map((c) => (
+    <div>
+      <dt>{t(idioma, `articulo.${c.clave}`)}</dt>
+      <dd>
+        {/^\d{4}-\d{2}-\d{2}$/.test(c.valor)
+          ? formatearFecha(idioma, c.valor)
+          : c.valor}
+      </dd>
+    </div>
+  ))}
+  <div>
+    <dt>{t(idioma, 'articulo.recursos')}</dt>
+    <dd class="recursos">
+      {recursos.map((r) => (
+        <Enlace href={r.url} idioma={idioma} variante="texto">
+          {t(idioma, `articulo.${r.clave}`)}
+        </Enlace>
+      ))}
+    </dd>
+  </div>
+</dl>
+<style>
+  .ficha {
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+    font-size: var(--text-meta);
+    line-height: 1.5;
+  }
+  dt {
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .recursos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .investigacion {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding-block: var(--space-4);
+    border-block: var(--line-width) solid var(--line);
+    margin-bottom: var(--space-5);
+  }
+  @media (max-width: 767px) {
+    .ficha {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,254 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Seccion } from '../../config/secciones';
+import type { Idioma } from '../../i18n/config';
+import { t } from '../../i18n';
+import { esPlaceholder } from '../../lib/enlaces';
+import { obtenerConRespaldo } from '../../content/consultas';
+import EncabezadoSeccion from '../EncabezadoSeccion.astro';
+import Boton from '../Boton.astro';
+import Reticula from '../Reticula.astro';
+import Acordeon from '../Acordeon.astro';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  perfil: CollectionEntry<'perfil'>['data'];
+}
+const { seccion, idioma, perfil } = Astro.props;
+const { data: contenido } = await obtenerConRespaldo('portada', idioma);
+const fecha = esPlaceholder(perfil.cv.fecha)
+  ? perfil.cv.fecha
+  : new Intl.DateTimeFormat(idioma, {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(perfil.cv.fecha));
+---
+
+<div class="biografia">
+  <Reticula class={perfil.foto ? 'con-foto' : 'sin-foto'}>
+    <div class="cabecera">
+      <EncabezadoSeccion
+        seccion={seccion}
+        idioma={idioma}
+        titulo={contenido.sobre_mi_titulo}
+      />
+    </div>
+    {perfil.foto && (
+      <figure class="retrato">
+        <img
+          src={perfil.foto.ruta}
+          alt={perfil.foto.alt}
+          width="540"
+          height="675"
+          loading="lazy"
+        />
+      </figure>
+    )}
+    <div class="texto">
+      <p class="presentacion">{perfil.presentacion}</p>
+      <div class="preguntas">
+        <h3>{t(idioma, 'portada.preguntas')}</h3>
+        <dl>
+          {perfil.preguntas.map((pregunta, i) => (
+            <div>
+              <dt class:list={{ ing: i === 0, inv: i === 1 }}>
+                {pregunta.tipo}
+              </dt>
+              <dd class:list={{ pendiente: esPlaceholder(pregunta.texto) }}>
+                {pregunta.texto}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div class="trayectoria-escritorio">
+        <h3>{t(idioma, 'portada.trayectoria')}</h3>
+        <ul>
+          {perfil.trayectoria.map((fila) => (
+            <li>{fila}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="trayectoria-plegada">
+        <Acordeon
+          titulo={t(idioma, 'portada.trayectoria')}
+          recuento={new Intl.NumberFormat(idioma).format(
+            perfil.trayectoria.length,
+          )}
+        >
+          <ul>
+            {perfil.trayectoria.map((fila) => (
+              <li>{fila}</li>
+            ))}
+          </ul>
+        </Acordeon>
+      </div>
+      <div class="cv">
+        <Boton href={perfil.cv.url}>
+          {t(idioma, 'descargarCv')} · {t(idioma, 'pdf')}{' '}
+          <span aria-hidden="true">↓</span>
+        </Boton>
+        <span>{t(idioma, 'portada.actualizado', { fecha })}</span>
+      </div>
+    </div>
+  </Reticula>
+</div>
+<style>
+  .cabecera,
+  .texto {
+    grid-column: 3 / span 8;
+  }
+  .cabecera {
+    margin-bottom: calc(var(--section-block-gap) - var(--space-5));
+  }
+  .texto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-block-gap);
+    min-width: 0;
+  }
+  :global(.con-foto) .cabecera,
+  :global(.con-foto) .texto {
+    grid-column: 7 / span 6;
+  }
+  .retrato {
+    grid-column: 1 / span 5;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  .retrato img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+  .presentacion {
+    font-size: var(--text-body-about);
+    line-height: var(--about-leading);
+    text-wrap: pretty;
+  }
+  h3 {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: var(--space-2);
+  }
+  dl {
+    margin: 0;
+  }
+  dl > div {
+    display: grid;
+    grid-template-columns: var(--question-label) minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--kicker-gap);
+    border-top: var(--line-width) solid var(--line);
+    align-items: baseline;
+  }
+  dl > div:last-child {
+    border-bottom: var(--line-width) solid var(--line);
+  }
+  dt {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  dt.ing {
+    color: var(--eng);
+  }
+  dt.inv {
+    color: var(--res);
+  }
+  dd {
+    margin: 0;
+    font-size: var(--text-project);
+    line-height: var(--question-leading);
+    color: var(--heading);
+  }
+  dd.pendiente {
+    color: var(--muted);
+  }
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-size: var(--text-meta);
+  }
+  li {
+    padding-block: var(--space-2);
+  }
+  .trayectoria-plegada {
+    display: none;
+  }
+  .cv {
+    display: flex;
+    gap: var(--space-5);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .cv > span {
+    color: var(--muted);
+    font-size: var(--text-meta);
+  }
+  @media (max-width: 1199px) {
+    .cabecera,
+    .texto {
+      grid-column: 1 / -1;
+    }
+    .biografia :global(.con-foto) {
+      grid-template-columns: var(--portrait-tablet) minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+    :global(.con-foto) .cabecera,
+    :global(.con-foto) .texto {
+      grid-column: 2;
+    }
+    .retrato {
+      grid-column: 1;
+    }
+    .trayectoria-escritorio {
+      display: none;
+    }
+    .trayectoria-plegada {
+      display: block;
+    }
+  }
+  @media (max-width: 767px) {
+    .biografia :global(.con-foto) {
+      grid-template-columns: repeat(var(--grid-columns-mobile), minmax(0, 1fr));
+    }
+    .cabecera,
+    :global(.con-foto) .cabecera,
+    :global(.con-foto) .texto,
+    .retrato {
+      grid-column: 1 / -1;
+    }
+    .cabecera {
+      margin-bottom: 0;
+    }
+    .retrato {
+      grid-row: auto;
+    }
+    .retrato img {
+      aspect-ratio: 4 / 3;
+    }
+    .texto {
+      gap: var(--section-block-gap);
+    }
+    .presentacion {
+      font-size: var(--space-4);
+    }
+    dl > div {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+    dd {
+      font-size: var(--text-body-about);
+    }
+    .cv {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-3);
+    }
+  }
+</style>

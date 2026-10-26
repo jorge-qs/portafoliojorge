@@ -1,0 +1,30 @@
+{
+  "areas": [
+    {
+      "id": "artificial-intelligence-machine-learning",
+      "nombre": "Artificial Intelligence & Machine Learning",
+      "herramientas": ["PyTorch", "scikit-learn", "Hugging Face", "LLM APIs"]
+    },
+    {
+      "id": "data-engineering",
+      "nombre": "Data Engineering",
+      "herramientas": ["SQL", "Apache Spark", "Airflow"]
+    },
+    {
+      "id": "software-engineering",
+      "nombre": "Software Engineering",
+      "herramientas": ["Python", "TypeScript", "FastAPI", "Docker"]
+    },
+    {
+      "id": "cloud-infrastructure",
+      "nombre": "Cloud & Infrastructure",
+      "herramientas": ["AWS", "GCP", "Terraform"]
+    },
+    {
+      "id": "research-scientific-computing",
+      "nombre": "Research & Scientific Computing",
+      "herramientas": ["NumPy", "JAX", "Jupyter", "LaTeX"]
+    }
+  ],
+  "borrador": true
+}

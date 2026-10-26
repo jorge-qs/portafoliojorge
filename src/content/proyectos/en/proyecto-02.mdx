@@ -1,0 +1,129 @@
+---
+titulo: '‹Featured project 2›'
+tipo: 'inv'
+anio: '‹year›'
+resumen: '‹What problem it solves, in one line›'
+herramientas:
+  [
+    'PyTorch',
+    'scikit-learn',
+    'Hugging Face',
+    'Python',
+    'NumPy',
+    'Jupyter',
+    'LaTeX',
+  ]
+rol: '‹…›'
+destacado: true
+orden_destacado: 2
+enlaces: {}
+borrador: true
+fecha: '‹date›'
+lectura_min: '‹n›'
+investigacion:
+  autores: '‹author› · ‹coauthors›'
+  afiliacion: '‹pending›'
+  publicado: '‹date›'
+  bibtex: '‹BibTeX pending›'
+---
+
+import Ficha from '../../../components/articulo/Ficha.astro';
+import Pregunta from '../../../components/articulo/Pregunta.astro';
+import Formula from '../../../components/articulo/Formula.astro';
+import Experimento from '../../../components/articulo/Experimento.astro';
+import Figura from '../../../components/articulo/Figura.astro';
+import NotaMargen from '../../../components/articulo/NotaMargen.astro';
+import Referencias from '../../../components/articulo/Referencias.astro';
+import Citar from '../../../components/articulo/Citar.astro';
+import { semilla } from '../../articulos/semilla';
+export const { fichaB, pregunta, referencias, bibtex } = semilla('en');
+
+<Ficha {...fichaB} investigacion />
+
+## 1 · Summary
+
+‹…›
+
+## 2 · Research question
+
+<Pregunta {...pregunta} />
+
+## 3 · Motivation and background
+
+‹…›
+
+<p id="cita-1" tabIndex={-1}>
+  <a href="#referencia-1">[1]</a>
+</p>
+<NotaMargen texto="[1] ‹Author, year›. Full citation in the margin." />
+
+## 4 · Foundations
+
+<Formula definiciones={['‹definition›','‹definition›','‹definition›']}>
+
+$$
+\htmlClass{formula-prob}{p(y \mid x)} = \operatorname{softmax}(\htmlClass{formula-weight}{W} \cdot \htmlClass{formula-hidden}{h} + b)
+$$
+
+</Formula>
+
+## 5 · Methodology
+
+‹…›
+
+## 6 · Experimental design
+
+<Experimento
+  parametro="‹parameter›"
+  leyenda="Figure 2 · A versus B. Example synthetic data."
+/>
+
+## 7 · Results
+
+<div className="multiples ancho">
+  {['Task 1', 'Task 2', 'Task 3'].map((t, i) => (
+    <Figura
+      numero={i + 3}
+      leyenda={`${t} · ‹pending metric›`}
+      descripcion={`${t}: illustrative comparison of A and B.`}
+      sinteticos
+    >
+      <svg viewBox="0 0 200 150" aria-hidden="true">
+        <rect
+          x="20"
+          y={150 - [55, 40, 70][i] * 1.6}
+          width="66"
+          height={[55, 40, 70][i] * 1.6}
+          fill="var(--plot-a)"
+          opacity="var(--plot-opacity-a)"
+          rx="4"
+        />
+        <rect
+          x="100"
+          y={150 - [72, 48, 66][i] * 1.6}
+          width="66"
+          height={[72, 48, 66][i] * 1.6}
+          fill="var(--plot-b)"
+          opacity="var(--plot-opacity-b)"
+          rx="4"
+        />
+      </svg>
+    </Figura>
+  ))}
+</div>
+
+## 8 · Discussion
+
+‹…›
+
+## 9 · Limitations
+
+‹…›
+
+## 10 · Conclusions and references
+
+<p id="cita-2" tabIndex={-1}>
+  <a href="#referencia-2">[2]</a>
+</p>
+<Referencias entradas={referencias} />
+<Citar bibtex={bibtex} />

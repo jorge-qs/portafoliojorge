@@ -1,0 +1,73 @@
+{
+  "medidas": [
+    {
+      "ancho": 1280,
+      "foto": {
+        "x": 40,
+        "y": 132.328125,
+        "width": 486,
+        "height": 607.5
+      },
+      "texto": {
+        "x": 652,
+        "y": 299.125,
+        "width": 588,
+        "height": 589.234375
+      },
+      "titulo": {
+        "x": 652,
+        "y": 132.328125,
+        "width": 588,
+        "height": 126.796875
+      },
+      "notasDeCuatro": 3
+    },
+    {
+      "ancho": 834,
+      "foto": {
+        "x": 32,
+        "y": 441.53125,
+        "width": 240,
+        "height": 300
+      },
+      "texto": {
+        "x": 304,
+        "y": 662.328125,
+        "width": 498,
+        "height": 556.40625
+      },
+      "titulo": {
+        "x": 304,
+        "y": 441.53125,
+        "width": 498,
+        "height": 172.796875
+      },
+      "notasDeCuatro": 3
+    },
+    {
+      "ancho": 390,
+      "foto": {
+        "x": 20,
+        "y": 326.890625,
+        "width": 350,
+        "height": 262.5
+      },
+      "texto": {
+        "x": 20,
+        "y": 621.390625,
+        "width": 350,
+        "height": 679.34375
+      },
+      "titulo": {
+        "x": 20,
+        "y": 156.59375,
+        "width": 350,
+        "height": 138.296875
+      },
+      "notasDeCuatro": 3
+    }
+  ],
+  "fotoRetirada": true,
+  "notasRetiradas": true,
+  "buildFinalSinNotas": true
+}

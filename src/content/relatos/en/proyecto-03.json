@@ -1,0 +1,293 @@
+{
+  "diagrama": {
+    "nodos": [
+      {
+        "id": "user",
+        "etiqueta": "‹…›",
+        "x": 58,
+        "y": 210,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "orq",
+        "etiqueta": "‹…›",
+        "x": 218,
+        "y": 210,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "a",
+        "etiqueta": "‹…›",
+        "x": 392,
+        "y": 84,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "b",
+        "etiqueta": "‹…›",
+        "x": 400,
+        "y": 210,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "c",
+        "etiqueta": "‹…›",
+        "x": 392,
+        "y": 336,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "tools",
+        "etiqueta": "‹…›",
+        "x": 218,
+        "y": 72,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "mem",
+        "etiqueta": "‹…›",
+        "x": 218,
+        "y": 348,
+        "responsabilidad": "‹…›",
+        "entradas_salidas": "‹…›",
+        "cumple": "‹…›"
+      }
+    ],
+    "aristas": [
+      ["user", "a"],
+      ["user", "b"],
+      ["user", "c"],
+      ["a", "tools"],
+      ["c", "tools"],
+      ["b", "c"],
+      ["a", "mem"],
+      ["user", "orq"],
+      ["orq", "a"],
+      ["orq", "b"],
+      ["orq", "c"],
+      ["orq", "tools"],
+      ["orq", "mem"],
+      ["b", "tools"]
+    ]
+  },
+  "capitulos": [
+    {
+      "titulo": "‹…›",
+      "texto": "‹…›",
+      "nota": "‹…›",
+      "estado": {
+        "atenuados": ["orq"],
+        "posiciones": {
+          "user": {
+            "x": 60,
+            "y": 210
+          },
+          "a": {
+            "x": 310,
+            "y": 92
+          },
+          "b": {
+            "x": 400,
+            "y": 240
+          },
+          "c": {
+            "x": 236,
+            "y": 330
+          },
+          "tools": {
+            "x": 140,
+            "y": 86
+          },
+          "mem": {
+            "x": 404,
+            "y": 362
+          },
+          "orq": {
+            "x": 226,
+            "y": 206
+          }
+        },
+        "aristasVisibles": [
+          ["user", "a"],
+          ["user", "b"],
+          ["user", "c"],
+          ["a", "tools"],
+          ["c", "tools"],
+          ["b", "c"],
+          ["a", "mem"]
+        ]
+      },
+      "leyenda": "‹…›"
+    },
+    {
+      "titulo": "‹…›",
+      "texto": "‹…›",
+      "nota": "‹…›",
+      "estado": {
+        "posiciones": {
+          "user": {
+            "x": 58,
+            "y": 210
+          },
+          "orq": {
+            "x": 218,
+            "y": 210
+          },
+          "a": {
+            "x": 392,
+            "y": 84
+          },
+          "b": {
+            "x": 400,
+            "y": 210
+          },
+          "c": {
+            "x": 392,
+            "y": 336
+          },
+          "tools": {
+            "x": 218,
+            "y": 72
+          },
+          "mem": {
+            "x": 218,
+            "y": 348
+          }
+        },
+        "aristasVisibles": [
+          ["user", "orq"],
+          ["orq", "a"],
+          ["orq", "b"],
+          ["orq", "c"],
+          ["orq", "tools"],
+          ["orq", "mem"],
+          ["b", "tools"]
+        ]
+      },
+      "leyenda": "‹…›"
+    },
+    {
+      "titulo": "‹…›",
+      "texto": "‹…›",
+      "pasos": [
+        {
+          "texto": "‹…›",
+          "estado": {
+            "recorrido": ["user", "orq"],
+            "aristasResaltadas": [["user", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "‹…›",
+          "estado": {
+            "recorrido": ["b"],
+            "aristasResaltadas": [["orq", "b"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "‹…›",
+          "estado": {
+            "recorrido": ["tools"],
+            "aristasResaltadas": [["b", "tools"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "‹…›",
+          "estado": {
+            "recorrido": ["orq"],
+            "aristasResaltadas": [["b", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        }
+      ],
+      "leyenda": "‹…›"
+    },
+    {
+      "titulo": "‹…›",
+      "texto": "‹…›",
+      "nota": "‹…›",
+      "resultados": [
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        },
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        },
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        },
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        },
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        },
+        {
+          "etiqueta": "‹…›",
+          "valor": "‹…›",
+          "sintetico": true
+        }
+      ],
+      "leyenda": "‹…›"
+    }
+  ],
+  "equivalente_texto": ["‹…›"],
+  "borrador": true
+}

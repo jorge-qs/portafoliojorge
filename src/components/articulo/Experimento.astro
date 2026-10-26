@@ -1,0 +1,177 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+import { generarHistograma } from '../../lib/datos-sinteticos';
+interface Props {
+  parametro: string;
+  leyenda: string;
+  idioma?: Idioma;
+}
+const { parametro, leyenda, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+const datos = generarHistograma();
+---
+
+<figure class="experimento ancho" data-experimento>
+  <div class="controles">
+    <p>{t(idioma, 'articulo.controles')}</p>
+    <span
+      data-proximamente
+      class="visualmente-oculto"
+      id="experimento-proximamente"
+    >
+      {t(idioma, 'articulo.proximamente')}
+    </span>
+    <label for="parametro">
+      {parametro} <output>{new Intl.NumberFormat(idioma).format(0.7)}</output>
+    </label>
+    <input
+      aria-describedby="experimento-proximamente"
+      id="parametro"
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value="0.7"
+      disabled
+    />
+    <fieldset disabled>
+      <legend>{t(idioma, 'articulo.comparar')}</legend>
+      <div class="comparar">
+        <button type="button" aria-pressed="false" disabled>
+          {t(idioma, 'articulo.modeloA')}
+        </button>
+        <button type="button" aria-pressed="true" disabled>
+          {t(idioma, 'articulo.ambos')}
+        </button>
+      </div>
+    </fieldset>
+    <button type="button" disabled>
+      {t(idioma, 'articulo.restablecer')}
+    </button>
+  </div>
+  <div class="histograma">
+    <svg viewBox="0 0 480 260" aria-hidden="true">
+      {datos.map((d, i) => (
+        <g>
+          <rect
+            class="serie-b"
+            x={i * 15}
+            y={240 - d.b * 2.3}
+            width="12"
+            height={d.b * 2.3}
+            rx="2"
+          />
+          <rect
+            class="serie-a"
+            x={i * 15}
+            y={240 - d.a * 2.3}
+            width="12"
+            height={d.a * 2.3}
+            rx="2"
+          />
+        </g>
+      ))}
+    </svg>
+    <figcaption>
+      {leyenda} · {t(idioma, 'articulo.sinteticos')}
+    </figcaption>
+  </div>
+</figure>
+<script>
+  import { iniciarExperimentos } from '../../lib/experimento';
+  iniciarExperimentos();
+</script>
+<style>
+  figure {
+    margin: 0;
+    display: grid;
+    grid-template-columns: var(--article-margin) minmax(0, 1fr);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .controles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--surface-2);
+    font-size: var(--text-meta);
+  }
+  .controles > p {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  input {
+    width: 100%;
+    height: var(--touch-min);
+    accent-color: var(--res);
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  legend {
+    margin-bottom: var(--space-2);
+  }
+  .comparar {
+    display: flex;
+    gap: var(--space-1);
+    background: var(--bg);
+    padding: var(--space-1);
+    border-radius: var(--radius-md);
+  }
+  button {
+    min-height: var(--touch-min);
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-size: var(--text-meta);
+    flex: 1;
+  }
+  button[aria-pressed='true'] {
+    background: var(--surface);
+    color: var(--heading);
+    border-radius: var(--radius-sm);
+  }
+  .histograma {
+    padding: var(--space-6);
+    align-self: center;
+    min-width: 0;
+  }
+  svg {
+    width: 100%;
+  }
+  .serie-a {
+    fill: var(--plot-a);
+    opacity: var(--plot-opacity-a);
+  }
+  .serie-b {
+    fill: var(--plot-b);
+    opacity: var(--plot-opacity-b);
+  }
+  figcaption {
+    font-size: var(--text-kicker);
+    color: var(--muted);
+  }
+  @media (max-width: 767px) {
+    figure {
+      grid-template-columns: 1fr;
+    }
+    .histograma {
+      grid-row: 1;
+      padding: var(--space-4);
+    }
+    .controles {
+      padding: var(--space-4);
+    }
+  }
+</style>

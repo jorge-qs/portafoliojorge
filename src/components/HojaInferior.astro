@@ -1,0 +1,97 @@
+---
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  id: string;
+  titulo: string;
+  idioma: Idioma;
+  variante?: 'hoja' | 'capitulos';
+}
+const { id, titulo, idioma, variante = 'hoja' } = Astro.props;
+---
+
+{/* eslint-disable astro/jsx-a11y/no-redundant-roles -- El encargo exige role=dialog explícito. */}
+<dialog
+  id={id}
+  class:list={['hoja-inferior', variante]}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`${id}-titulo`}
+  data-hoja
+  inert
+>
+  <div class="asa" aria-hidden="true"></div>
+  <div class="cabecera">
+    <h2 id={`${id}-titulo`}>{titulo}</h2>
+    <button type="button" data-cerrar-hoja>
+      {t(idioma, 'cerrar')}
+    </button>
+  </div>
+  <slot />
+</dialog>
+<script>
+  import { iniciarHojas } from '../lib/hojas';
+  iniciarHojas();
+</script>
+<style>
+  dialog {
+    position: fixed;
+    inset: auto 0 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: var(--article-reading);
+    max-height: 85svh;
+    overflow: auto;
+    padding: var(--space-3) var(--space-5) var(--space-6);
+    border: 0;
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    color: var(--text);
+    background: var(--surface);
+  }
+  dialog::backdrop {
+    background: var(--sheet-backdrop);
+  }
+  dialog[open] {
+    transition:
+      transform var(--dur) var(--ease-out),
+      opacity var(--dur) var(--ease-out);
+  }
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: translateY(var(--sheet-entry));
+    }
+  }
+  .asa {
+    width: var(--sheet-handle-width);
+    height: var(--sheet-handle-height);
+    border-radius: var(--radius-tag);
+    background: var(--line);
+    margin: 0 auto var(--space-3);
+  }
+  .cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  h2 {
+    font-size: var(--article-deck);
+  }
+  button {
+    min-height: var(--touch-min);
+    min-width: var(--touch-min);
+    border: 0;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .capitulos {
+      inset: var(--nav-h) var(--space-6) auto auto;
+      width: var(--article-margin);
+      border-radius: var(--radius-lg);
+    }
+  }
+</style>

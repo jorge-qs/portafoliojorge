@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { destinoPerfil, esPlaceholder } from '../lib/enlaces';
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variante?: 'primario' | 'secundario' | 'terciario';
+}
+const { href, variante = 'primario', ...atributos } = Astro.props;
+const desactivado = esPlaceholder(href);
+---
+
+<a
+  {...atributos}
+  class:list={['boton', variante, atributos.class]}
+  href={destinoPerfil(href)}
+  aria-disabled={desactivado ? 'true' : undefined}
+  tabindex={desactivado ? -1 : atributos.tabindex}
+>
+  <slot />
+</a>
+<style>
+  .boton {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--button-h);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-ui);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-inout);
+  }
+  .primario {
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+  .primario:hover {
+    background: var(--accent-hover);
+  }
+  .secundario {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .secundario:hover {
+    background: var(--surface-hover);
+  }
+  .terciario {
+    color: var(--text);
+  }
+  .terciario:hover {
+    color: var(--heading);
+  }
+  .boton:active:not([aria-disabled='true']) {
+    transform: scale(var(--press-scale));
+  }
+  [aria-disabled='true'] {
+    cursor: default;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .boton:active:not([aria-disabled='true']) {
+      transform: none;
+    }
+  }
+  :global(html[data-teclado]) .boton:active {
+    transform: none;
+  }
+</style>

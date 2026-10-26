@@ -1,0 +1,451 @@
+---
+import EtiquetaTipo from './EtiquetaTipo.astro';
+import FiguraRelato from './FiguraRelato.astro';
+import { bloquesRelato } from '../lib/relato-estado';
+import { ruta, t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import type { Relato } from '../content/esquemas';
+import type { EntradaProyecto } from '../content/validacion';
+interface Props {
+  relato: Relato;
+  proyecto: EntradaProyecto & { slug: string };
+  numero: number;
+  total: number;
+  siguiente?: string;
+  idioma: Idioma;
+}
+const { relato, proyecto, numero, total, siguiente, idioma } = Astro.props;
+const id = `relato-${proyecto.slug}`;
+const nombres = [
+  'problema',
+  'arquitectura',
+  'funcionamiento',
+  'resultados',
+].map((k) => t(idioma, `relato.${k}`));
+const bloques = bloquesRelato(relato);
+const salida = siguiente ? `#relato-${siguiente}` : '#indice';
+---
+
+<article id={id} class="relato" data-relato aria-labelledby={`${id}-titulo`}>
+  <h2 id={`${id}-titulo`} class="visualmente-oculto" tabindex="-1">
+    {proyecto.data.titulo}
+  </h2>
+  <header class="cabecera">
+    <div class="identidad">
+      <EtiquetaTipo tipo={proyecto.data.tipo} idioma={idioma} />
+      <span>· {t(idioma, 'relato.proyecto', { n: numero, total })}</span>
+    </div>
+    <div class="salidas">
+      <a href={ruta(idioma, `proyectos/${proyecto.slug}/`)}>
+        {t(idioma, 'relato.completo')}
+      </a>
+      <a data-relato-siguiente href={salida}>
+        {t(idioma, 'relato.siguiente')}
+      </a>
+      <a data-relato-saltar href="#indice">
+        {t(idioma, 'relato.saltar')}
+      </a>
+    </div>
+  </header>
+  <nav
+    class="rail"
+    aria-label={t(idioma, 'relato.capitulos', { n: numero, total })}
+  >
+    {nombres.map((nombre, i) => (
+      <button
+        type="button"
+        data-relato-ir={i + 1}
+        aria-current={i === 0 ? 'step' : undefined}
+      >
+        <span>{new Intl.NumberFormat(idioma).format(i + 1)}</span>
+        <span class="nombre-capitulo">{nombre}</span>
+      </button>
+    ))}
+  </nav>
+  <div class="reticula-relato">
+    <figure class="figura-fija" data-relato-fija hidden inert>
+      <figcaption>
+        <span>
+          {t(idioma, 'relato.figura', { n: numero })} ·{' '}
+          <span data-relato-caption>{relato.capitulos[0].leyenda}</span>
+        </span>
+        <div role="group" aria-label={t(idioma, 'relato.formato')}>
+          <button type="button" data-relato-modo="diagrama" aria-pressed="true">
+            {t(idioma, 'relato.diagrama')}
+          </button>
+          <button type="button" data-relato-modo="texto" aria-pressed="false">
+            {t(idioma, 'relato.texto')}
+          </button>
+        </div>
+      </figcaption>
+      <div class="visual-fija" data-relato-visual aria-hidden="true" inert>
+        <FiguraRelato
+          relato={relato}
+          estado={relato.capitulos[0].estado}
+          capitulo={1}
+          idioma={idioma}
+          dinamica
+        />
+      </div>
+      <p class="pista" data-relato-pista hidden>
+        {t(idioma, 'relato.pista')}
+      </p>
+      {/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- La versión textual se desplaza con el teclado. */}
+      <div class="equivalente" data-relato-texto tabindex="0" hidden inert>
+        <ul>
+          {relato.equivalente_texto.map((texto) => (
+            <li>{texto}</li>
+          ))}
+        </ul>
+      </div>
+    </figure>
+    <div class="texto-relato">
+      {relato.capitulos.map((capitulo, i) => (
+        <section
+          id={`${id}-capitulo-${i + 1}`}
+          class="capitulo"
+          data-relato-capitulo={i + 1}
+          aria-labelledby={`${id}-k${i + 1} ${id}-c${i + 1} ${id}-titulo`}
+        >
+          <div data-relato-bloque data-capitulo={i + 1} data-paso="-1">
+            <span class="kicker" id={`${id}-k${i + 1}`}>
+              {t(idioma, 'relato.capitulo', { n: i + 1, nombre: nombres[i] })}
+            </span>
+            <h3 id={`${id}-c${i + 1}`} tabindex="-1">
+              {capitulo.titulo}
+            </h3>
+            <p>{capitulo.texto}</p>
+            {'nota' in capitulo && <p class="nota">{capitulo.nota}</p>}
+            <figure class="figura-estatica" data-relato-estatica>
+              <FiguraRelato
+                relato={relato}
+                estado={bloques.find((b) => b.capitulo === i + 1)!.estado}
+                capitulo={i + 1}
+                idioma={idioma}
+              />
+              <figcaption>{capitulo.leyenda}</figcaption>
+            </figure>
+          </div>
+          {'pasos' in capitulo &&
+            capitulo.pasos.map((paso, j) => (
+              <div
+                class="paso"
+                data-relato-bloque
+                data-capitulo="3"
+                data-paso={j}
+              >
+                <span class="numero-paso">
+                  {new Intl.NumberFormat(idioma).format(j + 1)}
+                </span>
+                <p>{paso.texto}</p>
+                <figure class="figura-estatica" data-relato-estatica>
+                  <FiguraRelato
+                    relato={relato}
+                    estado={
+                      bloques.find((b) => b.capitulo === 3 && b.paso === j)!
+                        .estado
+                    }
+                    capitulo={3}
+                    idioma={idioma}
+                  />
+                </figure>
+              </div>
+            ))}
+          {i === 3 && (
+            <ul class="resultados-textuales">
+              {relato.capitulos[3].resultados.map((r, j) => (
+                <li>
+                  {r.etiqueta} ·{' '}
+                  {t(idioma, j % 2 ? 'relato.con' : 'relato.sin')} ·{' '}
+                  {typeof r.valor === 'number'
+                    ? new Intl.NumberFormat(idioma, {
+                        style: 'percent',
+                      }).format(r.valor / 100)
+                    : r.valor}
+                </li>
+              ))}
+              {relato.capitulos[3].resultados.some((r) => r.sintetico) && (
+                <li>{t(idioma, 'relato.sinteticos')}</li>
+              )}
+            </ul>
+          )}
+        </section>
+      ))}
+      <details class="equivalente-estatico">
+        <summary>{t(idioma, 'relato.texto')}</summary>
+        <ul>
+          {relato.equivalente_texto.map((texto) => (
+            <li>{texto}</li>
+          ))}
+        </ul>
+      </details>
+    </div>
+  </div>
+  <script
+    type="application/json"
+    data-relato-datos
+    set:html={JSON.stringify(relato).replace(/</g, '\\u003c')}
+  />
+</article>
+<script>
+  import { iniciarRelatos } from '../lib/relato';
+  iniciarRelatos();
+</script>
+<style>
+  .relato {
+    position: relative;
+  }
+  .cabecera {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-nav);
+    background: var(--bg);
+    min-height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    font-size: var(--text-kicker);
+  }
+  .identidad,
+  .salidas {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .identidad {
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .salidas {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  a {
+    min-height: var(--touch-min);
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .rail {
+    position: sticky;
+    top: var(--nav-h);
+    display: flex;
+    gap: var(--space-1);
+    z-index: var(--z-nav);
+    background: var(--bg);
+    padding-block: var(--space-1);
+  }
+  button {
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
+    border: 0;
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: var(--text-kicker);
+  }
+  .rail button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  button[aria-current],
+  button[aria-pressed='true'] {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+  .reticula-relato {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .figura-fija {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: var(--relato-top);
+    height: calc(100svh - var(--relato-top) - var(--space-5));
+    margin: 0;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    flex-direction: column;
+  }
+  .figura-fija:not([hidden]) {
+    display: flex;
+  }
+  figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    color: var(--muted);
+    font-size: var(--text-kicker);
+  }
+  figcaption [role='group'] {
+    display: flex;
+    gap: var(--space-1);
+  }
+  .visual-fija {
+    flex: 1;
+    min-height: 0;
+  }
+  /* Solo en modo Diagrama y con diagrama en pantalla (bug 5 del prototipo). */
+  .pista {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    color: var(--muted);
+    font-size: var(--text-kicker);
+  }
+  .equivalente {
+    overflow: auto;
+    padding: var(--space-4);
+    font-size: var(--text-meta);
+  }
+  .equivalente ul {
+    margin: 0;
+  }
+  .equivalente li + li {
+    margin-top: var(--space-2);
+  }
+  .texto-relato {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .capitulo {
+    min-height: var(--relato-ch);
+    padding-top: var(--relato-ch-pad);
+    scroll-margin-top: var(--relato-top);
+  }
+  .capitulo:has(.paso) {
+    min-height: 0;
+  }
+  .kicker {
+    display: block;
+    color: var(--muted);
+    font-size: var(--text-meta);
+    margin-bottom: var(--space-3);
+  }
+  h3 {
+    font-size: var(--relato-title);
+    line-height: var(--section-leading);
+    letter-spacing: var(--section-tracking);
+    margin-bottom: var(--space-4);
+  }
+  p {
+    font-size: var(--text-body-about);
+    line-height: var(--about-leading);
+  }
+  .nota {
+    font-size: var(--text-meta);
+    color: var(--muted);
+    margin-top: var(--space-4);
+  }
+  .paso {
+    min-height: var(--relato-step);
+    padding-top: var(--space-5);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+  }
+  .numero-paso {
+    color: var(--accent);
+  }
+  .figura-estatica {
+    grid-column: 1 / -1;
+    height: var(--diagram-height);
+    background: var(--surface);
+    margin: var(--space-5) 0;
+    border-radius: var(--radius-lg);
+    padding-bottom: var(--space-7);
+  }
+  .resultados-textuales {
+    font-size: var(--text-meta);
+    color: var(--muted);
+  }
+  .equivalente-estatico {
+    margin-block: var(--space-5);
+  }
+  summary {
+    cursor: pointer;
+    min-height: var(--touch-min);
+  }
+  [data-mejorado] .figura-estatica {
+    display: none;
+  }
+  @media (max-width: 1199px) {
+    .reticula-relato {
+      gap: var(--space-6);
+    }
+  }
+  @media (max-width: 767px) {
+    .cabecera {
+      position: relative;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .identidad {
+      min-height: var(--nav-h);
+    }
+    .salidas {
+      justify-content: flex-start;
+      gap: var(--space-2) var(--space-4);
+    }
+    .rail {
+      top: 0;
+    }
+    .nombre-capitulo {
+      display: none;
+    }
+    .reticula-relato {
+      display: block;
+    }
+    .figura-fija {
+      top: var(--relato-rail-h);
+      height: min(var(--relato-mobile-h), var(--relato-mobile-max));
+      z-index: var(--content-layer);
+    }
+    figcaption {
+      padding: var(--space-1) var(--space-2);
+    }
+    .capitulo {
+      padding-top: var(--space-5);
+      min-height: var(--relato-ch-mobile);
+    }
+    h3 {
+      font-size: var(--chapter-title);
+    }
+    .paso {
+      min-height: var(--relato-step-mobile);
+    }
+    .figura-estatica {
+      height: var(--diagram-mobile-height);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cabecera,
+    .rail {
+      position: static;
+    }
+    .figura-fija {
+      display: none;
+      position: static;
+    }
+    [data-mejorado] .figura-estatica {
+      display: block;
+    }
+    .capitulo,
+    .paso {
+      min-height: 0;
+      padding-top: var(--space-7);
+    }
+  }
+</style>

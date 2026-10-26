@@ -1,0 +1,166 @@
+---
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+import type { ModeloDiagrama } from '../../lib/diagrama';
+import PanelDiagrama from './PanelDiagrama.astro';
+import HojaInferior from '../HojaInferior.astro';
+import DiagramaSVG from '../DiagramaSVG.astro';
+interface Props {
+  modelo: ModeloDiagrama;
+  descripcion: string;
+  idioma?: Idioma;
+}
+const { modelo, descripcion, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+const id = `diagrama-${crypto.randomUUID()}`;
+const seleccionado =
+  modelo.nodos.find((n) => n.id === modelo.seleccionado) ?? modelo.nodos[0];
+---
+
+<figure
+  class="diagrama ancho"
+  data-diagrama-articulo
+  data-modelo={JSON.stringify(modelo)}
+  data-cuenta={t(idioma, 'interaccion.componente', {
+    n: '{n}',
+    total: '{total}',
+  })}
+>
+  <div class="miniatura">
+    <div class="lienzo" data-lienzo-diagrama>
+      <DiagramaSVG modelo={modelo} />
+    </div>
+    <figcaption>{t(idioma, 'articulo.diagrama', { n: 1 })}</figcaption>
+    <button
+      class="explorar"
+      type="button"
+      hidden
+      aria-controls={id}
+      aria-expanded="false"
+      data-explorar-diagrama
+    >
+      {t(idioma, 'articulo.explorar')}
+    </button>
+    <span class="visualmente-oculto">{descripcion}</span>
+  </div>
+  <div class="panel">
+    <PanelDiagrama nodo={seleccionado} idioma={idioma} />
+  </div>
+  <HojaInferior
+    id={id}
+    titulo={t(idioma, 'interaccion.componente', {
+      n: modelo.nodos.indexOf(seleccionado) + 1,
+      total: modelo.nodos.length,
+    })}
+    idioma={idioma}
+  >
+    <PanelDiagrama nodo={seleccionado} idioma={idioma} />
+    <div class="recorrer">
+      <button type="button" data-componente-anterior>
+        {t(idioma, 'interaccion.anterior')}
+      </button>
+      <button type="button" data-componente-siguiente>
+        {t(idioma, 'interaccion.siguiente')}
+      </button>
+    </div>
+  </HojaInferior>
+</figure>
+<script>
+  import { iniciarDiagramasArticulo } from '../../lib/diagrama-articulo';
+  iniciarDiagramasArticulo();
+</script>
+<style>
+  figure {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--diagram-panel);
+    margin: 0;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .miniatura {
+    position: relative;
+    min-width: 0;
+    padding: var(--space-4);
+  }
+  .lienzo {
+    height: calc(var(--diagram-height) - 2 * var(--space-4));
+  }
+  figcaption {
+    position: absolute;
+    bottom: var(--space-4);
+    left: var(--space-4);
+  }
+  .panel {
+    background: var(--surface-2);
+    padding: var(--space-5);
+    font-size: var(--text-meta);
+  }
+  .panel h3 {
+    font-size: var(--article-deck);
+    margin-block: var(--space-3);
+    font-weight: 600;
+  }
+  .kicker,
+  dt,
+  figcaption {
+    color: var(--muted);
+  }
+  .kicker,
+  figcaption {
+    font-size: var(--text-kicker);
+  }
+  dl {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  dd {
+    margin: 0;
+  }
+  .explorar {
+    display: none;
+    min-height: var(--touch-min);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--accent);
+    padding-inline: var(--space-4);
+  }
+  .diagrama :global(dialog .kicker) {
+    display: none;
+  }
+  .recorrer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-4);
+  }
+  .recorrer button {
+    min-height: var(--touch-min);
+    border: 0;
+    background: transparent;
+    color: var(--accent);
+  }
+  @media (max-width: 767px) {
+    figure {
+      display: block;
+    }
+    .lienzo {
+      height: calc(var(--diagram-mobile-height) - 2 * var(--space-4));
+    }
+    figure:has([data-explorar-diagrama]:not([hidden])) .panel {
+      display: none;
+    }
+    .panel {
+      font-size: var(--text-meta);
+    }
+    .explorar:not([hidden]) {
+      display: block;
+    }
+    figcaption {
+      position: static;
+      margin-block: var(--space-3);
+    }
+  }
+</style>

@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import Relato from '../components/Relato.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Indice from '../components/portada/Indice.astro';
+import SobreMi from '../components/portada/SobreMi.astro';
+import Tecnologias from '../components/portada/Tecnologias.astro';
+import Notas from '../components/portada/Notas.astro';
+import Contacto from '../components/portada/Contacto.astro';
+import Hero from '../components/hero/Hero.astro';
+import {
+  obtenerConRespaldo,
+  obtenerNotas,
+  obtenerProyectos,
+} from '../content/consultas';
+import { ordenarProyectos, seleccionarDestacados } from '../content/validacion';
+import { seccionesVisibles } from '../config/secciones';
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  idioma: Idioma;
+}
+const { idioma } = Astro.props;
+const { data: perfil } = await obtenerConRespaldo('perfil', idioma);
+const notas = await obtenerNotas(idioma);
+const secciones = seccionesVisibles(notas.length > 0);
+const proyectos = ordenarProyectos(
+  (await obtenerProyectos(idioma)).filter((p) => p.data.estado !== 'archivado'),
+);
+const destacados = seleccionarDestacados(proyectos);
+const relatos = await getCollection('relatos');
+const { data: tecnologias } = await obtenerConRespaldo('tecnologias', idioma);
+const { data: ventanasHero } = await obtenerConRespaldo('hero', idioma);
+---
+
+<BaseLayout
+  titulo={perfil.nombre}
+  descripcion={perfil.presentacion}
+  idioma={idioma}
+  tema="cosmos"
+  portada
+>
+  {secciones.map((seccion) => (
+    <section
+      id={seccion.ancla || 'inicio'}
+      class:list={['seccion', seccion.id]}
+      aria-labelledby={`${seccion.id}-titulo`}
+      data-seccion-portada={seccion.id}
+      data-hero={seccion.id === 'hero' || undefined}
+    >
+      <div class="interior">
+        {seccion.id === 'hero' ? (
+          <Hero
+            idioma={idioma}
+            perfil={perfil}
+            ventanas={ventanasHero}
+            proyecto={destacados[0].data}
+            relato={
+              (relatos.find(
+                (r) => r.id === `${idioma}/${destacados[0].slug}`,
+              ) ?? relatos.find((r) => r.id === `es/${destacados[0].slug}`))!
+                .data
+            }
+            total={destacados.length}
+          />
+        ) : seccion.id === 'proyectos' ? (
+          <>
+            <h2 id="proyectos-titulo" class="visualmente-oculto" tabindex="-1">
+              {t(idioma, seccion.clave)}
+            </h2>
+            {destacados.map((proyecto, i) => (
+              <Relato
+                proyecto={proyecto}
+                relato={
+                  (relatos.find((r) => r.id === `${idioma}/${proyecto.slug}`) ??
+                    relatos.find((r) => r.id === `es/${proyecto.slug}`))!.data
+                }
+                numero={i + 1}
+                total={destacados.length}
+                siguiente={destacados[i + 1]?.slug}
+                idioma={idioma}
+              />
+            ))}
+          </>
+        ) : seccion.id === 'indice' ? (
+          <Indice seccion={seccion} idioma={idioma} proyectos={proyectos} />
+        ) : seccion.id === 'sobre-mi' ? (
+          <SobreMi seccion={seccion} idioma={idioma} perfil={perfil} />
+        ) : seccion.id === 'tecnologias' ? (
+          <Tecnologias
+            seccion={seccion}
+            idioma={idioma}
+            tecnologias={tecnologias}
+            proyectos={proyectos}
+          />
+        ) : seccion.id === 'notas' ? (
+          <Notas seccion={seccion} idioma={idioma} notas={notas} />
+        ) : (
+          <Contacto seccion={seccion} idioma={idioma} perfil={perfil} />
+        )}
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+<style>
+  .indice,
+  .sobre-mi,
+  .tecnologias,
+  .notas,
+  .contacto {
+    -webkit-font-smoothing: antialiased;
+  }
+  .seccion {
+    padding-top: var(--section-gap);
+  }
+  .interior {
+    max-width: calc(var(--content-max) + 2 * var(--page-margin));
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+  }
+  .hero .interior {
+    max-width: none;
+    padding-inline: 0;
+  }
+  .hero {
+    min-height: var(--hero-min);
+    padding: 0;
+  }
+  .proyectos {
+    padding-top: 0;
+  }
+  .indice {
+    padding-top: var(--index-gap);
+  }
+  .contacto {
+    position: relative;
+    isolation: isolate;
+    min-height: var(--contact-min);
+    margin-top: var(--section-gap);
+    padding-top: 0;
+  }
+  @media (max-width: 1199px) {
+    .seccion {
+      padding-top: var(--section-gap-tablet);
+    }
+    .hero,
+    .proyectos {
+      padding-top: 0;
+    }
+    .contacto {
+      margin-top: var(--section-gap-tablet);
+      padding-top: 0;
+    }
+    .interior {
+      padding-inline: var(--space-6);
+    }
+  }
+  @media (max-width: 767px) {
+    .seccion {
+      padding-top: var(--section-gap-mobile);
+    }
+    .hero,
+    .proyectos {
+      padding-top: 0;
+    }
+    .contacto {
+      margin-top: var(--section-gap-mobile);
+      min-height: 0;
+      padding-top: 0;
+    }
+    .interior {
+      padding-inline: var(--page-margin-mobile);
+    }
+  }
+</style>

@@ -1,0 +1,126 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Seccion } from '../../config/secciones';
+import type { Idioma } from '../../i18n/config';
+import { formatearFecha, ruta, t } from '../../i18n';
+import { esPlaceholder } from '../../lib/enlaces';
+import { obtenerConRespaldo } from '../../content/consultas';
+import EncabezadoSeccion from '../EncabezadoSeccion.astro';
+import Enlace from '../Enlace.astro';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  notas: CollectionEntry<'notas'>[];
+}
+const { seccion, idioma, notas } = Astro.props;
+const { data: contenido } = await obtenerConRespaldo('portada', idioma);
+---
+
+<EncabezadoSeccion
+  seccion={seccion}
+  idioma={idioma}
+  titulo={t(idioma, 'portada.notasTitulo')}
+/>
+<ol>
+  {notas.slice(0, 3).map((nota) => (
+    <li>
+      <a href={ruta(idioma, `notas/${nota.id.split('/').slice(1).join('/')}/`)}>
+        <time
+          datetime={
+            esPlaceholder(nota.data.fecha) ? undefined : nota.data.fecha
+          }
+        >
+          {esPlaceholder(nota.data.fecha)
+            ? nota.data.fecha
+            : formatearFecha(idioma, nota.data.fecha)}
+        </time>
+        <span class="titulo">{nota.data.titulo}</span>
+        <span
+          class:list={[
+            'tipo',
+            {
+              ing: nota.data.tipo === t(idioma, 'portada.notaTecnica'),
+              inv: nota.data.tipo === t(idioma, 'tipoInv'),
+            },
+          ]}
+        >
+          {nota.data.tipo}
+        </span>
+        <span class="accion">
+          {t(idioma, 'portada.leer')} <span aria-hidden="true">→</span>
+        </span>
+      </a>
+    </li>
+  ))}
+</ol>
+{notas.length > 3 && (
+  <Enlace idioma={idioma} href={contenido.notas_todas_url} variante="accion">
+    {t(idioma, 'portada.todasNotas')}
+  </Enlace>
+)}
+<style>
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-6) 0 0;
+    border-bottom: var(--line-width) solid var(--line);
+  }
+  a {
+    display: grid;
+    grid-template-columns: var(--note-columns);
+    gap: var(--space-5);
+    align-items: baseline;
+    padding-block: var(--space-5);
+    border-top: var(--line-width) solid var(--line);
+    color: var(--text);
+    text-decoration: none;
+    min-height: var(--touch-min);
+  }
+  time,
+  .tipo {
+    font-size: var(--text-meta);
+    color: var(--muted);
+  }
+  .titulo {
+    font-size: var(--text-body-about);
+    color: var(--heading);
+  }
+  .tipo.ing {
+    color: var(--eng);
+  }
+  .tipo.inv {
+    color: var(--res);
+  }
+  .accion {
+    text-align: right;
+    color: var(--accent);
+    font-size: var(--text-meta);
+  }
+  a:hover {
+    background: var(--surface);
+  }
+  a:hover .titulo {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  @media (max-width: 1199px) {
+    a {
+      grid-template-columns: var(--question-label) minmax(0, 1fr) var(
+          --question-label
+        );
+    }
+    .accion {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    a {
+      grid-template-columns: 1fr auto;
+      gap: var(--space-1);
+    }
+    .titulo {
+      grid-row: 2;
+      grid-column: 1 / -1;
+    }
+  }
+</style>

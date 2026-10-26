@@ -1,0 +1,193 @@
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-latin-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-latin-500-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-latin-600-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist-mono-latin-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist-mono-latin-500-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body,
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+h1,
+h2,
+h3 {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+a {
+  color: var(--link);
+  text-underline-offset: 0.2em;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.saltar-contenido {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg);
+  color: var(--accent);
+  z-index: var(--z-skip);
+}
+.saltar-contenido:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+/* Las páginas de artículo conservarán su cuerpo provisional hasta F3. */
+main {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-5);
+}
+main.portada {
+  max-width: none;
+  padding: 0;
+}
+ul {
+  padding-inline-start: var(--space-5);
+}
+
+html {
+  scroll-padding-top: var(--anchor-offset);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body.menu-abierto {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+html[data-teclado] *,
+html[data-teclado] *::before,
+html[data-teclado] *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* F4 · navegación entre documentos. Las páginas conservan sus cargas completas. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: f4-salir var(--dur-salida) var(--ease-inout) both;
+}
+::view-transition-new(root) {
+  animation: f4-entrar var(--dur) var(--ease-out) both;
+}
+@keyframes f4-salir {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes f4-entrar {
+  from {
+    opacity: 0;
+  }
+}
+.lista-indice > li:not([hidden]) {
+  animation: f4-entrar var(--dur) var(--ease-out);
+}
+.termino-activo {
+  outline: var(--active-line) solid var(--accent);
+  outline-offset: var(--underline-offset);
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: var(--dur) !important;
+    transition-duration: var(--dur) !important;
+  }
+}
+html[data-movimiento='reducido'] {
+  view-transition-name: none;
+}
+html[data-movimiento='reducido']::view-transition-group(*),
+html[data-movimiento='reducido']::view-transition-old(*),
+html[data-movimiento='reducido']::view-transition-new(*) {
+  animation: none !important;
+}

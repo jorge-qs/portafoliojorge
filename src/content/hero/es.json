@@ -1,0 +1,50 @@
+{
+  "ventanas": [
+    [
+      "kairos · planner",
+      "$ plan --goal \"revisión semanal\"",
+      "→ 1/5 leer calendario",
+      "→ 2/5 resumir notas",
+      "✓ 5 pasos · 1.8 s"
+    ],
+    [
+      "retriever · rag",
+      "query \"atención multi-cabeza\"",
+      "[0.91] notas/transformers.md",
+      "recall@5 0.89"
+    ],
+    ["critic", "score 0.82 → 0.91", "falta una cita en §2"],
+    ["tool · search", "GET arxiv?q=rlhf", "200 · 312 ms"],
+    ["memory", "write episode #218", "embed 768d"],
+    ["router", "route → retriever", "conf 0.93"],
+    ["eval", "acc 0.874 ± 0.01"],
+    ["verifier", "assert ok"],
+    ["tokens", "in 1.2k · out 340"],
+    ["summarizer", "3 párrafos → 4 líneas"],
+    ["trace", "span 7 · 212 ms"],
+    ["sandbox", "exit 0"],
+    ["vision", "ocr 98 %"],
+    ["guard", "pii: 0"],
+    ["cache", "hit"],
+    ["queue", "3 pending"],
+    ["ok"],
+    ["await"],
+    ["0.93"],
+    ["✓"],
+    ["212 ms"],
+    ["diff"],
+    ["stdout"],
+    ["$"]
+  ],
+  "radio": [
+    "traza · run 4f2a",
+    "12:04:31 planner.start goal=\"revisión semanal\"  12:04:32 retriever.query k=5  12:04:33 critic.score 0.91"
+  ],
+  "cubito": [
+    "memoria · episodios",
+    "write #218 · embed 768d · 3 refs · recall@5 0.89"
+  ],
+  "punta": ["coder", "edit agent.py"],
+  "borrador": true,
+  "ilustrativo": true
+}

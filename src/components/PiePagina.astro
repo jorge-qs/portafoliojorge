@@ -1,0 +1,99 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Idioma } from '../i18n/config';
+import { t } from '../i18n';
+import Enlace from './Enlace.astro';
+interface Props {
+  perfil: CollectionEntry<'perfil'>['data'];
+  idioma: Idioma;
+  portada?: boolean;
+}
+const { perfil, idioma, portada = false } = Astro.props;
+---
+
+<div class:list={['pie-pagina', { articulo: !portada }]}>
+  <span>
+    {t(idioma, 'copyright', {
+      anio: perfil.anio_copyright,
+      nombre: perfil.nombre,
+    })}
+  </span>
+  {portada ? (
+    <Enlace href="#contenido" idioma={idioma} variante="discreto" arriba>
+      {t(idioma, 'volverArriba')} <span aria-hidden="true">↑</span>
+    </Enlace>
+  ) : (
+    <div class="enlaces-pie">
+      <Enlace
+        href={perfil.contacto.email}
+        idioma={idioma}
+        variante="discreto"
+        correo
+      >
+        {t(idioma, 'correo')}
+      </Enlace>
+      <Enlace href={perfil.contacto.github} idioma={idioma} variante="externo">
+        {t(idioma, 'github')}
+      </Enlace>
+      <Enlace
+        href={perfil.contacto.linkedin}
+        idioma={idioma}
+        variante="externo"
+      >
+        {t(idioma, 'linkedin')}
+      </Enlace>
+      <Enlace href={perfil.cv.url} idioma={idioma} variante="accion" descarga>
+        {t(idioma, 'cv')}
+      </Enlace>
+    </div>
+  )}
+</div>
+<style>
+  .pie-pagina {
+    max-width: calc(var(--content-max) + 2 * var(--page-margin));
+    margin-inline: auto;
+    padding: var(--space-6) var(--page-margin);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    color: var(--muted);
+    font-size: var(--text-kicker);
+    line-height: normal;
+  }
+  .pie-pagina :global(.enlace) {
+    min-height: 0;
+  }
+  .articulo {
+    padding-block: var(--nav-hero-padding);
+    max-width: none;
+    padding-inline: var(--nav-article-margin);
+    border-top: var(--line-width) solid var(--line);
+  }
+  .enlaces-pie {
+    display: flex;
+    gap: var(--space-5);
+  }
+  .enlaces-pie :global(.externo) {
+    color: var(--muted);
+  }
+  @media (max-width: 1199px) {
+    .pie-pagina {
+      padding-inline: var(--space-6);
+    }
+  }
+  @media (max-width: 767px) {
+    .pie-pagina :global(.enlace) {
+      min-height: var(--touch-min);
+    }
+    .pie-pagina {
+      padding-inline: var(--page-margin-mobile);
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .enlaces-pie {
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+  }
+</style>

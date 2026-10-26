@@ -1,0 +1,91 @@
+---
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+import type { EntradaProyecto } from '../content/validacion';
+import { recuentosTipos } from '../lib/portada';
+interface Props {
+  idioma: Idioma;
+  proyectos: EntradaProyecto[];
+}
+const { idioma, proyectos } = Astro.props;
+const recuentos = recuentosTipos(proyectos);
+const opciones = [
+  ['todos', 'portada.todos'],
+  ['ing', 'tipoIng'],
+  ['inv', 'tipoInv'],
+  ['hib', 'portada.hibridos'],
+] as const;
+---
+
+<div
+  data-filtro
+  data-resumen={t(idioma, 'interaccion.proyectos', { n: '{n}' })}
+  class="filtro"
+  role="group"
+  aria-label={t(idioma, 'portada.filtro')}
+>
+  {opciones.map(([tipo, clave]) => (
+    <button
+      type="button"
+      data-filtro-tipo={tipo}
+      aria-pressed={tipo === 'todos'}
+    >
+      {t(idioma, clave)}{' '}
+      <span class="num">
+        {new Intl.NumberFormat(idioma).format(recuentos[tipo])}
+      </span>
+    </button>
+  ))}
+</div>
+<p class="visualmente-oculto" data-resumen-filtro aria-live="polite"></p>
+<script>
+  import { iniciarFiltro } from '../lib/filtro';
+  iniciarFiltro();
+</script>
+<style>
+  .filtro {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+  button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tool-h);
+    border: 0;
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-4);
+    background: transparent;
+    color: var(--muted);
+    font-size: var(--text-meta);
+  }
+  button[aria-pressed='true'] {
+    background: var(--surface-2);
+    color: var(--heading);
+    font-weight: 500;
+  }
+  button:hover {
+    background: var(--surface-2);
+  }
+  @media (max-width: 767px) {
+    .filtro {
+      padding: 0;
+      flex-wrap: wrap;
+      background: transparent;
+    }
+    button {
+      min-height: var(--touch-min);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: var(--radius-md);
+    }
+    button[aria-pressed='true'] {
+      background: var(--accent-tint);
+      color: var(--accent);
+    }
+  }
+</style>

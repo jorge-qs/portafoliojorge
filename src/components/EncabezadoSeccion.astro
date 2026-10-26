@@ -1,0 +1,47 @@
+---
+import type { Seccion } from '../config/secciones';
+import { t } from '../i18n';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  titulo?: string;
+}
+const { seccion, idioma, titulo } = Astro.props;
+const numero = new Intl.NumberFormat(idioma, {
+  minimumIntegerDigits: 2,
+}).format(seccion.numero);
+---
+
+<div class="encabezado-seccion">
+  <p class="kicker">
+    <span class="num">{numero}</span>
+    <span>{t(idioma, `${seccion.clave}Kicker`)}</span>
+  </p>
+  <h2 id={`${seccion.id}-titulo`} tabindex="-1">
+    {titulo ?? t(idioma, seccion.clave)}
+  </h2>
+</div>
+<style>
+  .kicker {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--text-kicker);
+    color: var(--muted);
+    margin-bottom: var(--kicker-gap);
+  }
+  .num {
+    color: var(--accent);
+  }
+  h2 {
+    font-size: var(--section-title);
+    font-weight: 600;
+    line-height: var(--section-leading);
+    letter-spacing: var(--section-tracking);
+  }
+  @media (max-width: 767px) {
+    h2 {
+      font-size: var(--section-title-mobile);
+    }
+  }
+</style>

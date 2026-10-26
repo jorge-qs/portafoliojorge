@@ -1,0 +1,110 @@
+---
+titulo: '‹Featured project 3›'
+tipo: 'hib'
+anio: '‹year›'
+resumen: '‹What problem it solves, in one line›'
+herramientas: ['Hugging Face', 'LLM APIs', 'SQL', 'Python', 'NumPy']
+rol: '‹…›'
+destacado: true
+orden_destacado: 3
+enlaces: {}
+borrador: true
+fecha: '‹date›'
+lectura_min: '‹n›'
+---
+
+import EnUnMinuto from '../../../components/articulo/EnUnMinuto.astro';
+import Ficha from '../../../components/articulo/Ficha.astro';
+import Diagrama from '../../../components/articulo/Diagrama.astro';
+import TablaDecisiones from '../../../components/articulo/TablaDecisiones.astro';
+import CodigoAnotado from '../../../components/articulo/CodigoAnotado.astro';
+import Figura from '../../../components/articulo/Figura.astro';
+import NotaMargen from '../../../components/articulo/NotaMargen.astro';
+import Pregunta from '../../../components/articulo/Pregunta.astro';
+import Referencias from '../../../components/articulo/Referencias.astro';
+import { semilla } from '../../articulos/semilla';
+export const {
+  fichaA,
+  minuto,
+  diagrama,
+  decisiones,
+  codigo,
+  anotaciones,
+  pregunta,
+  referencias,
+} = semilla('en');
+
+## 1 · Summary
+
+<div className="apertura ancho">
+<div>
+<EnUnMinuto {...minuto} />
+</div>
+<div>
+
+## 2 · Overview
+
+<Ficha {...fichaA} />
+</div>
+</div>
+
+## 3 · Context and problem
+
+‹…›
+
+<NotaMargen texto="Technical note. It aligns with its sentence. On mobile, it opens inline." />
+
+## 4 · Requirements
+
+<Pregunta {...pregunta} />
+
+## 5 · Architecture
+
+<Diagrama
+  modelo={diagrama}
+  descripcion="The User connects to the Orchestrator. The Orchestrator connects to Agent A, Agent B, Agent C, Memory, and Tools. Agent B also connects to Tools."
+/>
+
+## 6 · Decisions and alternatives
+
+<TablaDecisiones filas={decisiones} />
+
+## 7 · Implementation
+
+<CodigoAnotado codigo={codigo} archivo="‹file›" anotaciones={anotaciones} />
+
+## 8 · Evaluation
+
+<Figura
+  numero={2}
+  leyenda="‹pending metric›. Las barras son de forma, no datos."
+  descripcion="Seis barras ilustrativas: de forma, no datos."
+>
+  <svg viewBox="0 0 560 150" aria-hidden="true">
+    {[52, 70, 38, 64, 80, 46].map((h, i) => (
+      <rect
+        x={i * 90 + 4}
+        y={150 - h * 1.7}
+        width="68"
+        height={h * 1.7}
+        rx="6"
+        fill={i % 2 ? 'var(--formula-weight)' : 'var(--surface-2)'}
+      />
+    ))}
+  </svg>
+</Figura>
+<NotaMargen texto="Metodología: ‹task set›, ‹baseline›, ‹runs›." />
+
+## 9 · Limitations
+
+‹…›
+
+## 10 · Resources
+
+<p id="cita-1" tabIndex={-1}>
+  <a href="#referencia-1">[1]</a>
+</p>
+<p id="cita-2" tabIndex={-1}>
+  <a href="#referencia-2">[2]</a>
+</p>
+<Referencias entradas={referencias} />

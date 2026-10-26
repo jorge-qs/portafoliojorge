@@ -1,0 +1,28 @@
+---
+import Codigo from '../components/articulo/Codigo.astro';
+import Tabla from '../components/articulo/Tabla.astro';
+import { render, type CollectionEntry } from 'astro:content';
+import NotaLayout from '../layouts/NotaLayout.astro';
+import type { Idioma } from '../i18n/config';
+interface Props {
+  nota: CollectionEntry<'notas'> & {
+    slug: string;
+    idioma: Idioma;
+    esRespaldo: boolean;
+  };
+}
+const { nota } = Astro.props;
+const { Content } = await render(nota);
+---
+
+<NotaLayout
+  titulo={nota.data.titulo}
+  fecha={nota.data.fecha}
+  idioma={nota.idioma}
+  idiomaContenido={nota.esRespaldo ? 'es' : undefined}
+  esRespaldo={nota.esRespaldo}
+  canonical={nota.esRespaldo ? `/notas/${nota.slug}/` : undefined}
+  alternativos={nota.esRespaldo ? ['es'] : ['es', 'en']}
+>
+  <Content components={{ pre: Codigo, table: Tabla }} />
+</NotaLayout>

@@ -1,0 +1,122 @@
+---
+import { Code } from 'astro:components';
+import { t } from '../../i18n';
+import type { Idioma } from '../../i18n/config';
+import { idiomaDe } from '../../i18n/actual';
+interface Props {
+  codigo: string;
+  archivo: string;
+  anotaciones: { linea: number; texto: string }[];
+  idioma?: Idioma;
+}
+const { codigo, archivo, anotaciones, idioma: idiomaProp } = Astro.props;
+const idioma = idiomaProp ?? idiomaDe(Astro);
+const lineas = codigo.split('\n');
+---
+
+{/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex -- Región de código desplazable accesible con teclado. */}
+<div class="codigo-anotado ancho">
+  <div class="fragmento">
+    <p>
+      {archivo} · {t(idioma, 'articulo.fragmento')}
+    </p>
+    <div
+      class="codigo-scroll"
+      tabindex="0"
+      role="region"
+      aria-label={t(idioma, 'articulo.codigoRegion')}
+    >
+      <div class="codigo-lineas">
+        {lineas.map((linea, i) => (
+          <div class="linea">
+            <span class="numero" aria-hidden="true">
+              {new Intl.NumberFormat(idioma).format(i + 1)}
+            </span>
+            <Code code={linea || ' '} lang="python" theme="css-variables" />
+            {anotaciones.map(
+              (a, j) =>
+                a.linea === i + 1 && (
+                  <span class="marca">
+                    {new Intl.NumberFormat(idioma).format(j + 1)}
+                  </span>
+                ),
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+  <aside class="notas-codigo">
+    {anotaciones.map((a, i) => (
+      <p>
+        <span>{new Intl.NumberFormat(idioma).format(i + 1)}</span> {a.texto}
+      </p>
+    ))}
+  </aside>
+</div>
+<style>
+  .codigo-anotado {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--article-margin);
+    gap: var(--article-gap);
+  }
+  .fragmento {
+    min-width: 0;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+  .fragmento p {
+    font: var(--code-size)/var(--code-leading) var(--font-mono);
+    color: var(--muted);
+    margin-bottom: var(--space-2);
+  }
+  .codigo-scroll {
+    overflow: auto;
+    max-width: 100%;
+    font: var(--code-size)/var(--code-leading) var(--font-mono);
+  }
+  .codigo-lineas {
+    min-width: max-content;
+  }
+  .linea {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .linea :global(pre) {
+    margin: 0;
+    overflow: visible;
+    padding: 0;
+    font: inherit;
+  }
+  .linea :global(code) {
+    font: inherit;
+  }
+  .numero {
+    color: var(--muted);
+  }
+  .marca {
+    background: var(--accent);
+    color: var(--on-accent);
+    padding-inline: var(--space-1);
+    border-radius: var(--radius-sm);
+  }
+  .notas-codigo {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    color: var(--muted);
+    font-size: var(--text-kicker);
+    padding-top: var(--space-5);
+  }
+  .notas-codigo span {
+    color: var(--accent);
+  }
+  @media (max-width: 1199px) {
+    .codigo-anotado {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+  }
+</style>

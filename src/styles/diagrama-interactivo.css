@@ -1,0 +1,75 @@
+[data-lienzo-diagrama] {
+  position: relative;
+}
+.diagrama-botones {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.diagrama-nodo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+}
+[data-nodo] rect {
+  transition: fill var(--dur-fast) var(--ease-inout);
+}
+[data-nodo].nodo-hover rect {
+  fill: var(--surface-hover);
+}
+[data-panel-diagrama] {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+@starting-style {
+  [data-panel-diagrama]:not([hidden]) {
+    opacity: 0;
+  }
+}
+.ficha-diagrama {
+  position: absolute;
+  z-index: var(--content-layer);
+  top: var(--space-4);
+  width: min(var(--diagram-panel), 48%);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  padding: var(--space-4);
+  font-size: var(--text-meta);
+}
+.ficha-diagrama[data-lado='izquierda'] {
+  left: var(--space-4);
+}
+.ficha-diagrama[data-lado='derecha'] {
+  right: var(--space-4);
+}
+.ficha-diagrama dt {
+  color: var(--muted);
+}
+.ficha-diagrama dd {
+  margin: 0 0 var(--space-3);
+}
+.ficha-diagrama button {
+  min-height: var(--touch-min);
+  background: transparent;
+  border: 0;
+  color: var(--accent);
+}
+/* Relato en móvil (INTERACCIONES.md § Scrollytelling): la ficha pasa a hoja inferior. */
+@media (max-width: 767px) {
+  .ficha-diagrama[data-panel='opuesto'] {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: var(--z-nav);
+    width: auto;
+    max-height: 60svh;
+    overflow: auto;
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  }
+}

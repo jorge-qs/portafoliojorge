@@ -1,0 +1,100 @@
+---
+import type { Idioma } from '../i18n/config';
+import { t, rutaEquivalente } from '../i18n';
+interface Props {
+  idioma: Idioma;
+  tactil?: boolean;
+}
+const { idioma, tactil = false } = Astro.props;
+const otro = idioma === 'es' ? 'en' : 'es';
+const rutaOtro = rutaEquivalente(Astro.url.pathname, otro);
+---
+
+<div
+  class:list={['selector-idioma', { tactil }]}
+  role="group"
+  aria-label={t(idioma, 'idioma.etiqueta')}
+  data-selector-idioma
+>
+  {idioma === 'es' ? (
+    <span class="activo" aria-current="true" lang="es">
+      ES
+    </span>
+  ) : (
+    <a
+      href={rutaEquivalente(Astro.url.pathname, 'es')}
+      hreflang="es"
+      lang="es"
+      data-idioma-destino
+    >
+      ES
+    </a>
+  )}
+  <span class="separador" aria-hidden="true">
+    ·
+  </span>
+  {idioma === 'en' ? (
+    <span class="activo" aria-current="true" lang="en">
+      EN
+    </span>
+  ) : (
+    <a href={rutaOtro} hreflang="en" lang="en" data-idioma-destino>
+      EN
+    </a>
+  )}
+</div>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-selector-idioma]')
+    .forEach((selector) => {
+      selector
+        .querySelectorAll<HTMLAnchorElement>('[data-idioma-destino]')
+        .forEach((enlace) => {
+          const actualizarDestino = () => {
+            const destino = new URL(enlace.href);
+            destino.search = window.location.search;
+            destino.hash = window.location.hash;
+            enlace.href = `${destino.pathname}${destino.search}${destino.hash}`;
+          };
+          actualizarDestino();
+          window.addEventListener('hashchange', actualizarDestino);
+          window.addEventListener('popstate', actualizarDestino);
+        });
+    });
+</script>
+
+<style>
+  .selector-idioma {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    white-space: nowrap;
+    font-size: var(--text-meta);
+  }
+  a,
+  .activo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-min);
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .activo {
+    color: var(--heading);
+  }
+  a:hover {
+    color: var(--text);
+    transition: color var(--dur-fast) var(--ease-inout);
+  }
+  .separador {
+    color: var(--muted);
+  }
+  /* El idioma activo no es enlace (span): necesita el mismo ancho para que
+     «ES · EN» quede simétrico. */
+  .tactil a,
+  .tactil .activo {
+    min-width: var(--touch-min);
+  }
+</style>

@@ -1,0 +1,56 @@
+Destacado sin JSON — salida 1
+
+> portafolio-jorge-quenta@0.0.0 build
+> ASTRO_TELEMETRY_DISABLED=1 astro build
+
+10:11:58 [content] Syncing content
+10:11:58 [content] Synced content
+10:11:58 [types] Generated 278ms
+10:11:58 [build] output: "static"
+10:11:58 [build] mode: "static"
+10:11:58 [build] directory: /Users/pobidau/deska/workspaces/portafolio/F5/dist/
+10:11:58 [build] Collecting build info...
+10:11:58 [build] ✓ Completed in 288ms.
+10:11:58 [build] Building static entrypoints...
+10:11:59 [vite] ✓ built in 371ms
+10:11:59 [vite] ✓ built in 18ms
+10:11:59 [build] Rearranging server assets...
+
+ generating static routes 
+
+src/content/proyectos/es/coordinacion-multiagente.mdx: falta src/content/relatos/es/coordinacion-multiagente.json para el proyecto destacado
+  Stack trace:
+    at validarRelatos (file:///Users/pobidau/deska/workspaces/portafolio/F5/dist/.prerender/chunks/BaseLayout_B71H3tDJ.mjs:1209:117)
+    at async Module.getStaticPaths (file:///Users/pobidau/deska/workspaces/portafolio/F5/dist/.prerender/chunks/_slug__CBLRLbMo.mjs:21:37)
+    at async callGetStaticPaths (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/core/render/route-cache.js:36:27)
+    at async StaticPaths.getAll (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/runtime/prerender/static-paths.js:44:19)
+    at async StaticPaths.getAllWithMetadata (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/runtime/prerender/static-paths.js:63:38)
+
+
+JSON sin destacado — salida 1
+
+> portafolio-jorge-quenta@0.0.0 build
+> ASTRO_TELEMETRY_DISABLED=1 astro build
+
+10:12:00 [content] Syncing content
+10:12:00 [content] Synced content
+10:12:00 [types] Generated 276ms
+10:12:00 [build] output: "static"
+10:12:00 [build] mode: "static"
+10:12:00 [build] directory: /Users/pobidau/deska/workspaces/portafolio/F5/dist/
+10:12:00 [build] Collecting build info...
+10:12:00 [build] ✓ Completed in 285ms.
+10:12:00 [build] Building static entrypoints...
+10:12:00 [vite] ✓ built in 282ms
+10:12:00 [vite] ✓ built in 15ms
+10:12:00 [build] Rearranging server assets...
+
+ generating static routes 
+
+src/content/relatos/es/huerfano-f5.json: no corresponde a un proyecto destacado
+  Stack trace:
+    at validarRelatos (file:///Users/pobidau/deska/workspaces/portafolio/F5/dist/.prerender/chunks/BaseLayout_z5Pstyd2.mjs:1210:106)
+    at async Module.getStaticPaths (file:///Users/pobidau/deska/workspaces/portafolio/F5/dist/.prerender/chunks/_slug__DDfWELTg.mjs:21:37)
+    at async callGetStaticPaths (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/core/render/route-cache.js:36:27)
+    at async StaticPaths.getAll (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/runtime/prerender/static-paths.js:44:19)
+    at async StaticPaths.getAllWithMetadata (file:///Users/pobidau/deska/workspaces/portafolio/F5/node_modules/astro/dist/runtime/prerender/static-paths.js:63:38)

@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import mano from '../../assets/mano-adan-v2.provisional.png';
+import type { CollectionEntry } from 'astro:content';
+import type { Seccion } from '../../config/secciones';
+import type { Idioma } from '../../i18n/config';
+import { t } from '../../i18n';
+import { esPlaceholder } from '../../lib/enlaces';
+import EncabezadoSeccion from '../EncabezadoSeccion.astro';
+import FilaContacto from '../FilaContacto.astro';
+import Estrellas from '../Estrellas.astro';
+interface Props {
+  seccion: Seccion;
+  idioma: Idioma;
+  perfil: CollectionEntry<'perfil'>['data'];
+}
+const { seccion, idioma, perfil } = Astro.props;
+const fecha = esPlaceholder(perfil.cv.fecha)
+  ? perfil.cv.fecha
+  : new Intl.DateTimeFormat(idioma, {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(perfil.cv.fecha));
+---
+
+<div class="arte-contacto" aria-hidden="true">
+  <Estrellas semilla={7} excluirEncuentro={false} />
+  <div class="gesto">
+    <div class="terminal">
+      <div class="terminal-barra">
+        <i></i>
+        {t(idioma, 'portada.terminalAgente')}
+      </div>
+      <div class="comando">
+        {t(idioma, 'portada.terminalComando')}
+        <br />
+        <span>▍</span>
+      </div>
+    </div>
+    <Image
+      src={mano}
+      alt=""
+      aria-hidden="true"
+      format="webp"
+      width={540}
+      height={320}
+      loading="lazy"
+    />
+  </div>
+</div>
+<p class="visualmente-oculto" data-descripcion-contacto>
+  {t(idioma, 'portada.arteContacto')}
+</p>
+<div class="contenido-contacto">
+  <EncabezadoSeccion
+    seccion={seccion}
+    idioma={idioma}
+    titulo={perfil.frase_contacto}
+  />
+  {perfil.borrador && <p class="borrador">{t(idioma, 'portada.borrador')}</p>}
+  <div class="enlaces-contacto">
+    <FilaContacto
+      etiqueta={t(idioma, 'correo')}
+      valor={perfil.contacto.email}
+      href={perfil.contacto.email}
+      idioma={idioma}
+      correo
+    />
+    <FilaContacto
+      etiqueta={t(idioma, 'github')}
+      valor={perfil.contacto.github}
+      href={perfil.contacto.github}
+      idioma={idioma}
+    />
+    <FilaContacto
+      etiqueta={t(idioma, 'linkedin')}
+      valor={perfil.contacto.linkedin}
+      href={perfil.contacto.linkedin}
+      idioma={idioma}
+    />
+    <FilaContacto
+      etiqueta={t(idioma, 'cv')}
+      valor={t(idioma, 'portada.cvDetalle', { fecha })}
+      href={perfil.cv.url}
+      idioma={idioma}
+      cv
+    />
+  </div>
+</div>
+<style>
+  .arte-contacto {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: var(--art-layer);
+    overflow: hidden;
+  }
+  .gesto img {
+    position: absolute;
+    left: var(--contact-hand-left);
+    top: var(--hand-top);
+    width: var(--hand-w);
+    height: var(--hand-h);
+    max-width: none;
+    opacity: var(--hand-opacity);
+    filter: saturate(var(--hand-saturation));
+  }
+  .terminal {
+    position: absolute;
+    left: var(--contact-terminal-left);
+    top: var(--terminal-top);
+    width: var(--terminal-w);
+    height: var(--terminal-h);
+    border-radius: var(--terminal-radius);
+    background: var(--surface-2);
+    opacity: var(--terminal-opacity);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--terminal-font);
+  }
+  .terminal-barra {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: var(--space-4);
+    background: var(--surface-hover);
+    color: var(--text);
+    padding-inline: var(--space-2);
+  }
+  .terminal i {
+    width: var(--space-1);
+    height: var(--space-1);
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .comando {
+    padding: var(--space-1) var(--space-2);
+  }
+  .comando span {
+    color: var(--accent);
+  }
+  .contenido-contacto {
+    position: relative;
+    z-index: var(--content-layer);
+    max-width: var(--intro-max);
+    padding-top: var(--contact-top);
+  }
+  .borrador {
+    font-size: var(--text-kicker);
+    color: var(--pending-fg);
+    margin-top: var(--space-3);
+  }
+  .enlaces-contacto {
+    margin-top: var(--space-6);
+    border-bottom: var(--line-width) solid var(--line);
+  }
+  @media (max-width: 1199px) {
+    .contenido-contacto {
+      padding-top: var(--contact-top-tablet);
+    }
+    .gesto img {
+      left: var(--contact-hand-left-tablet);
+      top: var(--contact-hand-top-tablet);
+      width: var(--hand-w-tablet);
+      height: var(--hand-h-tablet);
+    }
+    .terminal {
+      left: var(--contact-terminal-left-tablet);
+      top: var(--contact-terminal-top-tablet);
+      width: var(--terminal-w-tablet);
+      height: var(--terminal-h-tablet);
+    }
+  }
+  @media (max-width: 767px) {
+    .contenido-contacto {
+      padding-top: var(--contact-mobile-art);
+      padding-bottom: var(--space-6);
+    }
+    .gesto img {
+      left: var(--contact-hand-left-mobile);
+      top: var(--contact-hand-top-mobile);
+      width: var(--hand-w-mobile);
+      height: var(--hand-h-mobile);
+    }
+    .terminal {
+      left: var(--contact-terminal-left-mobile);
+      top: var(--contact-terminal-top-mobile);
+      width: var(--terminal-w-mobile);
+      height: var(--terminal-h-mobile);
+    }
+  }
+</style>

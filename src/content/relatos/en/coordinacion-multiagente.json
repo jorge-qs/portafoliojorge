@@ -1,0 +1,314 @@
+{
+  "diagrama": {
+    "nodos": [
+      {
+        "id": "user",
+        "etiqueta": "User",
+        "x": 58,
+        "y": 210,
+        "responsabilidad": "Defines the task and receives the final answer.",
+        "entradas_salidas": "None → Natural-language task",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "orq",
+        "etiqueta": "Orchestrator",
+        "x": 218,
+        "y": 210,
+        "responsabilidad": "Breaks the task into a plan, assigns each step, and verifies the results before answering.",
+        "entradas_salidas": "Task, agent results → Plan, assignments, verified answer",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "a",
+        "etiqueta": "Researcher",
+        "x": 392,
+        "y": 84,
+        "responsabilidad": "Finds information and summarizes it with its sources.",
+        "entradas_salidas": "Scoped question → Sources and summary",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "b",
+        "etiqueta": "Programmer",
+        "x": 400,
+        "y": 210,
+        "responsabilidad": "Writes and runs code for a step in the plan.",
+        "entradas_salidas": "Step specification → Code and execution result",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "c",
+        "etiqueta": "Analyst",
+        "x": 392,
+        "y": 336,
+        "responsabilidad": "Interprets data and results, and makes the evidence explicit.",
+        "entradas_salidas": "Data and results → Conclusions with supporting evidence",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "tools",
+        "etiqueta": "Tools",
+        "x": 218,
+        "y": 72,
+        "responsabilidad": "Search, code execution, and files, with per-agent permissions.",
+        "entradas_salidas": "Agent calls → Results from each tool",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "mem",
+        "etiqueta": "Memory",
+        "x": 218,
+        "y": 348,
+        "responsabilidad": "Stores shared context between steps so no one works with stale data.",
+        "entradas_salidas": "Intermediate results → Updated context",
+        "cumple": "‹…›"
+      }
+    ],
+    "aristas": [
+      ["user", "a"],
+      ["user", "b"],
+      ["user", "c"],
+      ["a", "tools"],
+      ["c", "tools"],
+      ["b", "c"],
+      ["a", "mem"],
+      ["user", "orq"],
+      ["orq", "a"],
+      ["orq", "b"],
+      ["orq", "c"],
+      ["orq", "tools"],
+      ["orq", "mem"],
+      ["b", "tools"]
+    ]
+  },
+  "capitulos": [
+    {
+      "titulo": "Multiple agents, no coordination",
+      "texto": "Each agent handles its part of the task well, but none decides the order. Two agents consult the same source, another works with an outdated result, and the answers contradict one another at the end.",
+      "nota": "This is a conceptual example. The need in the real case is ‹pending›.",
+      "estado": {
+        "atenuados": ["orq"],
+        "posiciones": {
+          "user": {
+            "x": 60,
+            "y": 210
+          },
+          "a": {
+            "x": 310,
+            "y": 92
+          },
+          "b": {
+            "x": 400,
+            "y": 240
+          },
+          "c": {
+            "x": 236,
+            "y": 330
+          },
+          "tools": {
+            "x": 140,
+            "y": 86
+          },
+          "mem": {
+            "x": 404,
+            "y": 362
+          },
+          "orq": {
+            "x": 226,
+            "y": 206
+          }
+        },
+        "aristasVisibles": [
+          ["user", "a"],
+          ["user", "b"],
+          ["user", "c"],
+          ["a", "tools"],
+          ["c", "tools"],
+          ["b", "c"],
+          ["a", "mem"]
+        ]
+      },
+      "leyenda": "Without coordination"
+    },
+    {
+      "titulo": "An orchestrator and scoped roles",
+      "texto": "A component appears that does not solve the task: it distributes it. It receives the request, builds a plan, and assigns each step to an agent with a scoped role. Memory and tools become shared.",
+      "nota": "The same components from the previous chapter, now arranged around a central point.",
+      "estado": {
+        "posiciones": {
+          "user": {
+            "x": 58,
+            "y": 210
+          },
+          "orq": {
+            "x": 218,
+            "y": 210
+          },
+          "a": {
+            "x": 392,
+            "y": 84
+          },
+          "b": {
+            "x": 400,
+            "y": 210
+          },
+          "c": {
+            "x": 392,
+            "y": 336
+          },
+          "tools": {
+            "x": 218,
+            "y": 72
+          },
+          "mem": {
+            "x": 218,
+            "y": 348
+          }
+        },
+        "aristasVisibles": [
+          ["user", "orq"],
+          ["orq", "a"],
+          ["orq", "b"],
+          ["orq", "c"],
+          ["orq", "tools"],
+          ["orq", "mem"],
+          ["b", "tools"]
+        ]
+      },
+      "leyenda": "Components and relationships"
+    },
+    {
+      "titulo": "How a request flows",
+      "texto": "‹…›",
+      "pasos": [
+        {
+          "texto": "The user submits a task. The orchestrator receives it in full; no agent acts yet.",
+          "estado": {
+            "recorrido": ["user", "orq"],
+            "aristasResaltadas": [["user", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "El orquestador arma un plan y delega el paso de código en el Programmer.",
+          "estado": {
+            "recorrido": ["b"],
+            "aristasResaltadas": [["orq", "b"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "El Programmer usa la herramienta de ejecución. El resultado vuelve al orquestador, no directamente al usuario.",
+          "estado": {
+            "recorrido": ["tools"],
+            "aristasResaltadas": [["b", "tools"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "The orchestrator checks the result against the plan. If it fails, it retries the step with a limited budget; if it passes, it responds.",
+          "estado": {
+            "recorrido": ["orq"],
+            "aristasResaltadas": [["b", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        }
+      ],
+      "leyenda": "Request flow"
+    },
+    {
+      "titulo": "What changes compared with the baseline",
+      "texto": "The evaluation compares the same set of tasks with and without an orchestrator. The three agents in the diagram become the chart categories: each bar corresponds to the tasks for that role.",
+      "nota": "The chart values are synthetic and only illustrate the shape of the figure. The metric, task set, and number of runs are ‹pending›.",
+      "resultados": [
+        {
+          "etiqueta": "Researcher",
+          "valor": 42,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Researcher",
+          "valor": 64,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Programmer",
+          "valor": 55,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Programmer",
+          "valor": 71,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Analyst",
+          "valor": 36,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Analyst",
+          "valor": 60,
+          "sintetico": true
+        }
+      ],
+      "leyenda": "Evaluation · synthetic data"
+    }
+  ],
+  "equivalente_texto": [
+    "Six components without coordination",
+    "El User habla directamente con Researcher, Programmer y Analyst.",
+    "Researcher y Analyst consultan Tools por separado: la consulta se duplica.",
+    "Programmer y Analyst producen resultados en conflicto.",
+    "No one decides the order of the steps.",
+    "Orchestrator al centro",
+    "El User se comunica solo con el Orchestrator.",
+    "El Orchestrator se conecta con Researcher, Programmer, Analyst, Memory y Tools.",
+    "El Programmer también usa Tools para ejecutar código.",
+    "Request flow",
+    "The user submits a task. The orchestrator receives it in full; no agent acts yet.",
+    "El orquestador arma un plan y delega el paso de código en el Programmer.",
+    "El Programmer usa la herramienta de ejecución. El resultado vuelve al orquestador, no directamente al usuario.",
+    "The orchestrator checks the result against the plan. If it fails, it retries the step with a limited budget; if it passes, it responds.",
+    "Evaluation (synthetic data, for illustration only)",
+    "Category · without orchestrator · with orchestrator",
+    "Researcher · 42 % · 64 %",
+    "Programmer · 55 % · 71 %",
+    "Analyst · 36 % · 60 %",
+    "Real metric: pending."
+  ],
+  "borrador": true
+}

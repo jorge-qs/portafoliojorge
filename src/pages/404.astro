@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n';
+---
+
+<BaseLayout
+  titulo={t('es', 'error404Titulo')}
+  descripcion={t('es', 'error404Descripcion')}
+  idioma="es"
+  tema="cosmos"
+>
+  <section lang="es">
+    <h1>{t('es', 'error404Titulo')}</h1>
+    <p>{t('es', 'error404Descripcion')}</p>
+    <a href="/">{t('es', 'seccionHero')}</a>
+  </section>
+  <section lang="en">
+    <h2>{t('en', 'error404Titulo')}</h2>
+    <p>{t('en', 'error404Descripcion')}</p>
+    <a href="/en/">{t('en', 'seccionHero')}</a>
+  </section>
+</BaseLayout>

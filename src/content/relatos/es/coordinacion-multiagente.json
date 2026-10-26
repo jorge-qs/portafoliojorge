@@ -1,0 +1,314 @@
+{
+  "diagrama": {
+    "nodos": [
+      {
+        "id": "user",
+        "etiqueta": "Usuario",
+        "x": 58,
+        "y": 210,
+        "responsabilidad": "Formula la tarea y recibe la respuesta final.",
+        "entradas_salidas": "Ninguna → Tarea en lenguaje natural",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "orq",
+        "etiqueta": "Orquestador",
+        "x": 218,
+        "y": 210,
+        "responsabilidad": "Descompone la tarea en un plan, asigna cada paso y verifica los resultados antes de responder.",
+        "entradas_salidas": "Tarea, resultados de los agentes → Plan, asignaciones, respuesta verificada",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "a",
+        "etiqueta": "Investigador",
+        "x": 392,
+        "y": 84,
+        "responsabilidad": "Busca información y la resume con sus fuentes.",
+        "entradas_salidas": "Pregunta acotada → Fuentes y resumen",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "b",
+        "etiqueta": "Programador",
+        "x": 400,
+        "y": 210,
+        "responsabilidad": "Escribe y ejecuta código para un paso del plan.",
+        "entradas_salidas": "Especificación del paso → Código y resultado de la ejecución",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "c",
+        "etiqueta": "Analista",
+        "x": 392,
+        "y": 336,
+        "responsabilidad": "Interpreta datos y resultados, y deja explícita la evidencia.",
+        "entradas_salidas": "Datos y resultados → Conclusiones con su evidencia",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "tools",
+        "etiqueta": "Herramientas",
+        "x": 218,
+        "y": 72,
+        "responsabilidad": "Búsqueda, ejecución de código y archivos, con permisos por agente.",
+        "entradas_salidas": "Llamadas de los agentes → Resultados de cada herramienta",
+        "cumple": "‹…›"
+      },
+      {
+        "id": "mem",
+        "etiqueta": "Memoria",
+        "x": 218,
+        "y": 348,
+        "responsabilidad": "Guarda el contexto compartido entre pasos para que nadie trabaje con datos viejos.",
+        "entradas_salidas": "Resultados intermedios → Contexto actualizado",
+        "cumple": "‹…›"
+      }
+    ],
+    "aristas": [
+      ["user", "a"],
+      ["user", "b"],
+      ["user", "c"],
+      ["a", "tools"],
+      ["c", "tools"],
+      ["b", "c"],
+      ["a", "mem"],
+      ["user", "orq"],
+      ["orq", "a"],
+      ["orq", "b"],
+      ["orq", "c"],
+      ["orq", "tools"],
+      ["orq", "mem"],
+      ["b", "tools"]
+    ]
+  },
+  "capitulos": [
+    {
+      "titulo": "Varios agentes, nadie coordina",
+      "texto": "Cada agente resuelve bien su parte de la tarea, pero ninguno decide el orden. Dos agentes consultan la misma fuente, otro trabaja con un resultado viejo y al final las respuestas se contradicen.",
+      "nota": "Este es un ejemplo conceptual. La necesidad del caso real está ‹pendiente›.",
+      "estado": {
+        "atenuados": ["orq"],
+        "posiciones": {
+          "user": {
+            "x": 60,
+            "y": 210
+          },
+          "a": {
+            "x": 310,
+            "y": 92
+          },
+          "b": {
+            "x": 400,
+            "y": 240
+          },
+          "c": {
+            "x": 236,
+            "y": 330
+          },
+          "tools": {
+            "x": 140,
+            "y": 86
+          },
+          "mem": {
+            "x": 404,
+            "y": 362
+          },
+          "orq": {
+            "x": 226,
+            "y": 206
+          }
+        },
+        "aristasVisibles": [
+          ["user", "a"],
+          ["user", "b"],
+          ["user", "c"],
+          ["a", "tools"],
+          ["c", "tools"],
+          ["b", "c"],
+          ["a", "mem"]
+        ]
+      },
+      "leyenda": "Sin coordinación"
+    },
+    {
+      "titulo": "Un orquestador y roles acotados",
+      "texto": "Aparece un componente que no resuelve la tarea: la reparte. Recibe la petición, arma un plan y asigna cada paso a un agente con un rol acotado. La memoria y las herramientas pasan a ser compartidas.",
+      "nota": "Los mismos componentes del capítulo anterior, ahora ordenados alrededor de un centro.",
+      "estado": {
+        "posiciones": {
+          "user": {
+            "x": 58,
+            "y": 210
+          },
+          "orq": {
+            "x": 218,
+            "y": 210
+          },
+          "a": {
+            "x": 392,
+            "y": 84
+          },
+          "b": {
+            "x": 400,
+            "y": 210
+          },
+          "c": {
+            "x": 392,
+            "y": 336
+          },
+          "tools": {
+            "x": 218,
+            "y": 72
+          },
+          "mem": {
+            "x": 218,
+            "y": 348
+          }
+        },
+        "aristasVisibles": [
+          ["user", "orq"],
+          ["orq", "a"],
+          ["orq", "b"],
+          ["orq", "c"],
+          ["orq", "tools"],
+          ["orq", "mem"],
+          ["b", "tools"]
+        ]
+      },
+      "leyenda": "Componentes y relaciones"
+    },
+    {
+      "titulo": "Cómo circula una petición",
+      "texto": "‹…›",
+      "pasos": [
+        {
+          "texto": "El usuario envía una tarea. El orquestador la recibe completa; ningún agente actúa todavía.",
+          "estado": {
+            "recorrido": ["user", "orq"],
+            "aristasResaltadas": [["user", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "El orquestador arma un plan y delega el paso de código en el Programador.",
+          "estado": {
+            "recorrido": ["b"],
+            "aristasResaltadas": [["orq", "b"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "El Programador usa la herramienta de ejecución. El resultado vuelve al orquestador, no directamente al usuario.",
+          "estado": {
+            "recorrido": ["tools"],
+            "aristasResaltadas": [["b", "tools"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        },
+        {
+          "texto": "El orquestador verifica el resultado contra el plan. Si falla, repite el paso con un presupuesto limitado; si pasa, responde.",
+          "estado": {
+            "recorrido": ["orq"],
+            "aristasResaltadas": [["b", "orq"]],
+            "aristasVisibles": [
+              ["user", "orq"],
+              ["orq", "a"],
+              ["orq", "b"],
+              ["orq", "c"],
+              ["orq", "tools"],
+              ["orq", "mem"],
+              ["b", "tools"]
+            ]
+          }
+        }
+      ],
+      "leyenda": "Recorrido de una petición"
+    },
+    {
+      "titulo": "Qué cambia frente a la línea base",
+      "texto": "La evaluación compara el mismo conjunto de tareas con y sin orquestador. Los tres agentes del diagrama pasan a ser las categorías del gráfico: cada barra corresponde a las tareas de su rol.",
+      "nota": "Los valores del gráfico son sintéticos y solo muestran la forma de la figura. La métrica, el conjunto de tareas y el número de corridas están ‹pendiente›.",
+      "resultados": [
+        {
+          "etiqueta": "Investigador",
+          "valor": 42,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Investigador",
+          "valor": 64,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Programador",
+          "valor": 55,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Programador",
+          "valor": 71,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Analista",
+          "valor": 36,
+          "sintetico": true
+        },
+        {
+          "etiqueta": "Analista",
+          "valor": 60,
+          "sintetico": true
+        }
+      ],
+      "leyenda": "Evaluación · datos sintéticos"
+    }
+  ],
+  "equivalente_texto": [
+    "Seis componentes sin coordinación",
+    "El Usuario habla directamente con Investigador, Programador y Analista.",
+    "Investigador y Analista consultan Herramientas por separado: la consulta se duplica.",
+    "Programador y Analista producen resultados en conflicto.",
+    "Nadie decide el orden de los pasos.",
+    "Orquestador al centro",
+    "El Usuario se comunica solo con el Orquestador.",
+    "El Orquestador se conecta con Investigador, Programador, Analista, Memoria y Herramientas.",
+    "El Programador también usa Herramientas para ejecutar código.",
+    "Recorrido de una petición",
+    "El usuario envía una tarea. El orquestador la recibe completa; ningún agente actúa todavía.",
+    "El orquestador arma un plan y delega el paso de código en el Programador.",
+    "El Programador usa la herramienta de ejecución. El resultado vuelve al orquestador, no directamente al usuario.",
+    "El orquestador verifica el resultado contra el plan. Si falla, repite el paso con un presupuesto limitado; si pasa, responde.",
+    "Evaluación (datos sintéticos, solo demostrativos)",
+    "Categoría · sin orquestador · con orquestador",
+    "Investigador · 42 % · 64 %",
+    "Programador · 55 % · 71 %",
+    "Analista · 36 % · 60 %",
+    "Métrica real: pendiente."
+  ],
+  "borrador": true
+}
